@@ -143,8 +143,9 @@ export function isChordLine(line: string): boolean {
     const cleanToken = cleanChordToken(token);
     const lower = cleanToken.toLowerCase();
 
-    // If it's a common stop word (like "and", "the", "in", "to") that isn't clearly a chord
-    if (COMMON_WORDS.has(lower) && !['a'].includes(lower)) {
+    // If it's a common stop word (like "and", "the", "in", "to") that isn't clearly a chord.
+    // Capitalized "Am" is the A-minor chord, not the German word "am".
+    if (COMMON_WORDS.has(lower) && !['a'].includes(lower) && cleanToken !== 'Am') {
       wordCount++;
       continue;
     }
