@@ -10,6 +10,7 @@ Eine moderne Webanwendung, die Songtexte mit Akkorden über den Textzeilen (wie 
 ## Inhaltsverzeichnis
 
 1. [Anleitung: Programm starten](#anleitung-programm-starten)
+   - [Als Desktop-App (Linux, AppImage)](#als-desktop-app-linux-appimage)
 2. [Hauptfunktionen im Überblick](#hauptfunktionen-im-überblick)
 3. [Schritt-für-Schritt Bedienungsanleitung](#schritt-für-schritt-bedienungsanleitung)
 4. [So funktioniert die Konvertierung](#so-funktioniert-die-konvertierung)
@@ -46,6 +47,40 @@ Eine moderne Webanwendung, die Songtexte mit Akkorden über den Textzeilen (wie 
    ```
 
 *(Alternativ: Für einen optimierten Produktions-Build kann `npm run build` und anschließend `npm run preview` ausgeführt werden).*
+
+---
+
+## Als Desktop-App (Linux, AppImage)
+
+Dieses Projekt ist mit Electron als eigenständige Desktop-Anwendung verpackt. Die fertige **AppImage** ist eine einzelne Datei, die ohne Installation auf nahezu jeder Linux-Distribution läuft (auch ohne Node.js).
+
+### AppImage bauen
+```bash
+npm install
+npm run dist:linux
+```
+Das Ergebnis liegt in `release/Song-Konverter-<Version>.AppImage` (ca. 120 MB).
+
+### AppImage benutzen
+```bash
+chmod +x Song-Konverter-1.0.0.AppImage
+./Song-Konverter-1.0.0.AppImage
+```
+Die Datei kann beliebig kopiert oder weitergegeben werden. Für einen Eintrag im Anwendungsmenü die Datei z. B. mit [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) oder AppImageLauncher integrieren.
+
+Hinweise:
+- Benötigt auf manchen Systemen `fuse2` (Arch/CachyOS: `sudo pacman -S fuse2`). Alternativ: `./Song-Konverter-1.0.0.AppImage --appimage-extract-and-run`.
+- Auf Ubuntu 24.04 und neuer kann der Start mit einer Sandbox-Fehlermeldung scheitern. Dann mit `--no-sandbox` starten.
+
+### Entwickeln mit Electron
+In zwei Terminals:
+```bash
+npm run dev            # Vite-Entwicklungsserver auf Port 3000
+npm run electron:dev   # Electron-Fenster, das den Entwicklungsserver lädt
+```
+Den gebauten Stand ohne Paketierung testen: `npm run electron:start`.
+
+> Wird Electron aus VS Code oder einem anderen Electron-Programm heraus gestartet, kann die Umgebungsvariable `ELECTRON_RUN_AS_NODE` gesetzt sein. Dann startet Electron nicht als App. In dem Fall `env -u ELECTRON_RUN_AS_NODE npm run electron:start` verwenden.
 
 ---
 
