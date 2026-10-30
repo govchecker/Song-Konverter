@@ -255,3 +255,4 @@ Das Programm setzt **kein Limit** auf die Akkordvielfalt. Die Erkennung basiert 
 │       ├── chordTransposer.ts          # Transponier-Logik für Akkorde (+/- Halbtöne)
 │       └── sampleSongs.ts              # Beispiel-Songs (inkl. Incubus – Drive)
 ```
+# Song-Konverter-Desktop
