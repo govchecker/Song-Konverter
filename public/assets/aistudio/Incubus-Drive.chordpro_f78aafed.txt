@@ -1,0 +1,63 @@
+{title: Drive}
+{artist: Incubus}
+
+{start_of_part: Intro}
+[Em][Em7][Cmaj7][A7]
+[Em][Em7][Cmaj7][A7]
+{end_of_part}
+
+{start_of_verse: Verse}
+[Em]Sometime[Em7]s, I fe[Cmaj7]el the fear[A7] of un---[Em]certainty stinging clea[Em7]r[Cmaj7][A7]
+[Em]And I [Em7]can't [Cmaj7]help but ask myself how [A7]much
+I'll le[Em]t the fear take the wh[Em7]eel and [Cmaj7]steer.[A7]
+{end_of_verse}
+
+{start_of_part: Pre-Chorus}
+[Cmaj7]It's driven me bef[A7]ore, and it seems to have a vag[Cmaj9]ue -----[A7]haunting mass appeal.
+[Cmaj7]But lately I'm [A7]beginning to find that I--[Cmaj9]----should be the [A7]one behind the wheel.
+{end_of_part}
+
+{start_of_chorus: Chorus}
+[Em]Whatever [Em7]tomor[Cmaj7]row brings, I'[A7]ll be t[Em]here
+wi[Em7]th open [Cmaj7]arms and open eyes, Y[A7]eah
+Wh[Em]atever [Em7]tomor[Cmaj7]row brings, I'l[A7]l be there..I'll be[Em] ther[Em7]e.[Cmaj7][A7]
+{end_of_chorus}
+
+{start_of_verse: Verse}
+[Em]So, if [Em7]I de---[Cmaj7]cide to waiver my [A7]chance to [Em]be one of the hiv[Em7]e[Cmaj7][A7]
+[Em]Will I[Em7] choose [Cmaj7]water over wine and [A7]hold my [Em]own and drive? [Em7]Ahaa-aa[Cmaj7]-aa-aa.[A7]
+{end_of_verse}
+
+{start_of_part: Pre-Chorus}
+[Cmaj7]It's driven me be[A7]fore and it seems to be the wa[Cmaj9]y that every[A7]one else gets around.
+[Cmaj7]But lately [A7]I'm beginning to find that when[Cmaj9] I drive mys[A7]elf my light is found.
+{end_of_part}
+
+{start_of_chorus: Chorus}
+[Em]Whatever [Em7]tomor[Cmaj7]row brings, I'[A7]ll be t[Em]here
+wi[Em7]th open [Cmaj7]arms and open eyes, Y[A7]eah
+Wh[Em]atever [Em7]tomor[Cmaj7]row brings, I'l[A7]l be there---------[Em]-----[Em7]I'll b[Cmaj7]e there[A7].
+{end_of_chorus}
+
+{start_of_part: Solo}
+[Em][Em7][Cmaj7][A7]
+[Em][Em7][Cmaj7][A7]
+[Em][Em7][Cmaj7][A7]
+[Em][Em7][Cmaj7][A7]
+{end_of_part}
+
+{start_of_bridge: Bridge}
+[Cmaj7]Would you [A7]choose water over wine[Cmaj9]--------[A7]hold the wheel and drive?
+{end_of_bridge}
+
+{start_of_chorus: Chorus}
+[Em]Whatever [Em7]tomor[Cmaj7]row brings, I'[A7]ll be t[Em]here
+wi[Em7]th open [Cmaj7]arms and open eyes, Y[A7]eah
+Wh[Em]atever [Em7]tomor[Cmaj7]row brings, I'l[A7]l be there--------[Em]-----[Em7]-I'll [Cmaj7]be ther[A7]e.
+{end_of_chorus}
+
+[Em]------[Em7]-Do do[Cmaj7] do do do[A7] do do do do do do (x4)
+
+{start_of_part: Outro}
+[Cmaj7][A7]
+{end_of_part}
