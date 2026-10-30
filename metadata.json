@@ -1,6 +1,0 @@
-{
-  "name": "ChordPro Konverter für MobileSheets",
-  "description": "Wandelt Songtexte und Akkorde aus Ultimate Guitar in das ChordPro-Format um – mit Live-Vorschau und Download für MobileSheets.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

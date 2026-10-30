@@ -63,13 +63,13 @@ Das Ergebnis liegt in `release/Song-Konverter-<Version>.AppImage` (ca. 120 MB).
 
 ### AppImage benutzen
 ```bash
-chmod +x Song-Konverter-1.0.0.AppImage
-./Song-Konverter-1.0.0.AppImage
+chmod +x Song-Konverter-<Version>.AppImage
+./Song-Konverter-<Version>.AppImage
 ```
 Die Datei kann beliebig kopiert oder weitergegeben werden. Für einen Eintrag im Anwendungsmenü die Datei z. B. mit [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) oder AppImageLauncher integrieren.
 
 Hinweise:
-- Benötigt auf manchen Systemen `fuse2` (Arch/CachyOS: `sudo pacman -S fuse2`). Alternativ: `./Song-Konverter-1.0.0.AppImage --appimage-extract-and-run`.
+- Benötigt auf manchen Systemen `fuse2` (Arch/CachyOS: `sudo pacman -S fuse2`). Alternativ: `./Song-Konverter-<Version>.AppImage --appimage-extract-and-run`.
 - Auf Ubuntu 24.04 und neuer kann der Start mit einer Sandbox-Fehlermeldung scheitern. Dann mit `--no-sandbox` starten.
 
 ### Entwickeln mit Electron
@@ -239,8 +239,15 @@ Das Programm setzt **kein Limit** auf die Akkordvielfalt. Die Erkennung basiert 
 
 ```
 ├── README.md                           # Diese ausführliche Benutzeranleitung
-├── package.json                        # Projektkonfiguration und Abhängigkeiten
+├── package.json                        # Projektkonfiguration, Abhängigkeiten und electron-builder-Einstellungen
 ├── index.html                          # HTML-Einstiegsseite
+├── vite.config.ts                      # Vite-Konfiguration (React, Tailwind CSS)
+├── screenshot.jpg                      # Screenshot für diese Anleitung
+├── electron/
+│   └── main.cjs                        # Electron-Hauptprozess (Fenster, lädt Vite-Server bzw. dist/)
+├── build/
+│   ├── icon.svg                        # App-Icon (Vorlage)
+│   └── icon.png                        # App-Icon für die AppImage
 ├── src/
 │   ├── main.tsx                        # React Root Einstiegspunkt
 │   ├── App.tsx                         # Hauptkomponente mit Dual-Pane Benutzeroberfläche
@@ -255,4 +262,3 @@ Das Programm setzt **kein Limit** auf die Akkordvielfalt. Die Erkennung basiert 
 │       ├── chordTransposer.ts          # Transponier-Logik für Akkorde (+/- Halbtöne)
 │       └── sampleSongs.ts              # Beispiel-Songs (inkl. Incubus – Drive)
 ```
-# Song-Konverter-Desktop
