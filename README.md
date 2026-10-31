@@ -59,22 +59,22 @@ Dieses Projekt ist mit Electron als eigenständige Desktop-Anwendung verpackt. D
 npm install
 npm run dist:linux
 ```
-Das Ergebnis liegt in `release/Song-Konverter-<Version>.AppImage` (ca. 120 MB).
+Das Ergebnis liegt in `release/Song-Konverter-<Version>-linux-x86_64.AppImage` (ca. 120 MB).
 
 ### AppImage benutzen
 ```bash
-chmod +x Song-Konverter-<Version>.AppImage
-./Song-Konverter-<Version>.AppImage
+chmod +x Song-Konverter-<Version>-linux-x86_64.AppImage
+./Song-Konverter-<Version>-linux-x86_64.AppImage
 ```
 Die Datei kann beliebig kopiert oder weitergegeben werden. Für einen Eintrag im Anwendungsmenü die Datei z. B. mit [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) oder AppImageLauncher integrieren.
 
 ### Updates
-Fertige AppImages gibt es unter [Releases](https://github.com/govchecker/Song-Konverter-Desktop/releases). Jedes Release enthält die Datei `Song-Konverter-<Version>.AppImage`, und der Release-Tag lautet `v<Version>`.
+Fertige AppImages gibt es unter [Releases](https://github.com/govchecker/Song-Konverter-Desktop/releases). Jedes Release enthält die Datei `Song-Konverter-<Version>-linux-x86_64.AppImage`, und der Release-Tag lautet `v<Version>`.
 
 Da das Repository privat ist, können AppImage-Manager wie Shelly keine Updates erkennen: Sie fragen die GitHub-Releases ohne Anmeldung ab und erhalten bei privaten Repositories nur „Not Found“. Neue Versionen daher von Hand aus den Releases herunterladen.
 
 Hinweise:
-- Benötigt auf manchen Systemen `fuse2` (Arch/CachyOS: `sudo pacman -S fuse2`). Alternativ: `./Song-Konverter-<Version>.AppImage --appimage-extract-and-run`.
+- Benötigt auf manchen Systemen `fuse2` (Arch/CachyOS: `sudo pacman -S fuse2`). Alternativ: `./Song-Konverter-<Version>-linux-x86_64.AppImage --appimage-extract-and-run`.
 - Auf Ubuntu 24.04 und neuer kann der Start mit einer Sandbox-Fehlermeldung scheitern. Dann mit `--no-sandbox` starten.
 
 ### Entwickeln mit Electron

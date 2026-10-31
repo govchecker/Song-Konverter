@@ -45,7 +45,7 @@
       "output": "release",
       "buildResources": "build"
     },
-    "artifactName": "Song-Konverter-${version}.${ext}",
+    "artifactName": "Song-Konverter-${version}-linux-x86_64.${ext}",
     "linux": {
       "target": "AppImage",
       "category": "Utility",

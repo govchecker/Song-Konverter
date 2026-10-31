@@ -14,7 +14,7 @@ npm run lint           # Type check only (tsc --noEmit); there is no ESLint
 npm run build          # Production build to dist/
 npm run electron:dev   # Electron window loading http://localhost:3000 (run `npm run dev` first)
 npm run electron:start # vite build + run Electron against dist/
-npm run dist:linux     # Build AppImage to release/Song-Konverter-<version>.AppImage
+npm run dist:linux     # Build AppImage to release/Song-Konverter-<version>-linux-x86_64.AppImage
 ```
 
 - If Electron is launched from VS Code, `ELECTRON_RUN_AS_NODE` may be set and Electron won't start as an app. Prefix with `env -u ELECTRON_RUN_AS_NODE`.
