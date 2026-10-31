@@ -179,38 +179,38 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
 
   return (
     <div
-      className="p-6 md:p-8 bg-stone-900 text-stone-100 rounded-xl font-sans overflow-auto selection:bg-amber-500 selection:text-black border border-stone-800"
+      className="p-6 md:p-8 bg-navy-800 text-navy-100 rounded-xl font-sans overflow-auto selection:bg-accent selection:text-white border border-navy-650"
       style={{ fontSize: `${fontSize}px` }}
     >
       {/* Header Info */}
-      <div className="border-b border-stone-800 pb-4 mb-6 text-center">
-        <h1 className="text-2xl md:text-3xl font-extrabold text-stone-100 tracking-tight">
+      <div className="border-b border-navy-650 pb-4 mb-6 text-center">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
           {songTitle || 'Unbenannter Song'}
         </h1>
         {songArtist && (
-          <p className="text-stone-400 font-medium text-lg mt-0.5">{songArtist}</p>
+          <p className="text-navy-300 font-medium text-lg mt-0.5">{songArtist}</p>
         )}
 
         {/* Metadata Badges */}
         {(songKey || songCapo || songTempo || songTime) && (
           <div className="flex flex-wrap items-center justify-center gap-3 mt-3 text-xs">
             {songKey && (
-              <span className="px-2.5 py-1 rounded bg-stone-800 text-amber-400 border border-stone-700 font-mono">
+              <span className="px-2.5 py-1 rounded-md bg-blue-400/18 text-accent-soft font-mono">
                 Tonart: <strong>{songKey}</strong>
               </span>
             )}
             {songCapo && (
-              <span className="px-2.5 py-1 rounded bg-stone-800 text-sky-400 border border-stone-700">
+              <span className="px-2.5 py-1 rounded-md bg-cat-verse/14 text-cat-verse">
                 Capo: <strong>{songCapo}</strong>
               </span>
             )}
             {songTempo && (
-              <span className="px-2.5 py-1 rounded bg-stone-800 text-emerald-400 border border-stone-700 font-mono">
+              <span className="px-2.5 py-1 rounded-md bg-cat-part/14 text-cat-part font-mono">
                 Tempo: <strong>{songTempo} BPM</strong>
               </span>
             )}
             {songTime && (
-              <span className="px-2.5 py-1 rounded bg-stone-800 text-purple-400 border border-stone-700 font-mono">
+              <span className="px-2.5 py-1 rounded-md bg-cat-bridge/14 text-cat-bridge font-mono">
                 Takt: <strong>{songTime}</strong>
               </span>
             )}
@@ -227,16 +227,16 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
 
           if (line.type === 'section-start') {
             const styles = {
-              verse: 'text-sky-400 border-sky-500/50 bg-sky-950/20',
-              chorus: 'text-amber-400 border-amber-500/50 bg-amber-950/20 font-bold',
-              bridge: 'text-purple-400 border-purple-500/50 bg-purple-950/20',
-              part: 'text-emerald-400 border-emerald-500/50 bg-emerald-950/20',
+              verse: 'text-cat-verse bg-cat-verse/14',
+              chorus: 'text-chord bg-blue-400/18 font-bold',
+              bridge: 'text-cat-bridge bg-cat-bridge/14',
+              part: 'text-cat-part bg-cat-part/14',
             }[line.sectionType || 'part'];
 
             return (
               <div
                 key={idx}
-                className={`inline-block px-2.5 py-0.5 text-xs uppercase tracking-wider rounded border mt-3 mb-1 font-sans ${styles}`}
+                className={`inline-block px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider rounded-md mt-3 mb-1 font-sans ${styles}`}
               >
                 {line.sectionName}
               </div>
@@ -249,7 +249,7 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
 
           if (line.type === 'comment') {
             return (
-              <div key={idx} className="text-stone-400 italic font-sans text-sm my-1 pl-2 border-l-2 border-stone-600">
+              <div key={idx} className="text-navy-300 italic font-sans text-sm my-1 pl-2 border-l-2 border-navy-600">
                 {line.content}
               </div>
             );
@@ -259,13 +259,13 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
             return (
               <div
                 key={idx}
-                className="my-3 p-3.5 rounded-xl bg-stone-950 border border-stone-800 overflow-x-auto shadow-inner"
+                className="my-3 p-3.5 rounded-xl bg-navy-825 border border-navy-650 overflow-x-auto shadow-inner"
               >
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1.5 select-none font-sans">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                <div className="flex items-center gap-1.5 text-[10px] font-bold text-chord uppercase tracking-widest mb-1.5 select-none font-sans">
+                  <span className="w-1.5 h-1.5 rounded-full bg-chord" />
                   <span>Tabulatur (Monospace)</span>
                 </div>
-                <pre className="font-mono text-xs md:text-sm leading-snug tracking-wider text-amber-300 whitespace-pre font-normal select-text">
+                <pre className="font-mono text-xs md:text-sm leading-snug tracking-wider text-code whitespace-pre font-normal select-text">
                   {line.tabLines.join('\n')}
                 </pre>
               </div>
@@ -284,7 +284,7 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
                     .map((t, tIdx) => (
                       <span
                         key={tIdx}
-                        className="text-amber-400 font-bold font-mono tracking-wide"
+                        className="text-chord font-bold font-mono tracking-wide"
                       >
                         {t.chord}
                       </span>
@@ -299,11 +299,11 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
                 {line.tokens.map((token, tIdx) => (
                   <span key={tIdx} className="inline-flex flex-col">
                     {/* Chord displayed on top - styled normally like in MobileSheets */}
-                    <span className="text-amber-400 font-bold font-mono min-h-[1.25em] text-[0.88em] leading-none select-text">
+                    <span className="text-chord font-bold font-mono min-h-[1.25em] text-[0.88em] leading-none select-text">
                       {token.chord || '\u00A0'}
                     </span>
                     {/* Lyrics underneath */}
-                    <span className="whitespace-pre text-stone-200">
+                    <span className="whitespace-pre text-navy-100">
                       {token.text || '\u00A0'}
                     </span>
                   </span>

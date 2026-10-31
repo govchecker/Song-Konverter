@@ -1,5 +1,32 @@
 @import "tailwindcss";
 
+/* Mitternachtsblau-Palette: vom dunkelsten (Kopfleisten) zum hellsten (Text) */
+@theme {
+  --color-navy-950: #0a1430; /* App-Kopfleiste, Fenster-Kopfzeilen */
+  --color-navy-900: #12203f; /* Leiste darunter (Metadaten, Einfügen) */
+  --color-navy-850: #172544; /* Seitenhintergrund */
+  --color-navy-825: #192a4a; /* Editoren, Eingabefelder */
+  --color-navy-800: #1d2d50; /* Fensterflächen */
+  --color-navy-750: #213359; /* Fenster-Fußzeilen */
+  --color-navy-700: #26395f; /* Sekundär-Buttons */
+  --color-navy-650: #2e4472; /* Rahmen, Button-Hover */
+  --color-navy-600: #36507f; /* Button-Rahmen */
+  --color-navy-500: #6c82ad; /* Platzhalter */
+  --color-navy-300: #a7b8d8; /* gedämpfter Text */
+  --color-navy-200: #dbe5f6; /* Button-Text */
+  --color-navy-100: #eaf0fb; /* Text */
+
+  --color-accent: #3b82f6;
+  --color-accent-hover: #4b8ff8;
+  --color-accent-soft: #a5cbff;
+  --color-chord: #7cb6ff;
+  --color-code: #d3e3ff;
+
+  --color-cat-verse: #5cc8fa;
+  --color-cat-bridge: #c9a2ff;
+  --color-cat-part: #4ade9a;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -21,12 +48,12 @@
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #1c1917;
+  background: var(--color-navy-825);
 }
 ::-webkit-scrollbar-thumb {
-  background: #44403c;
+  background: var(--color-navy-600);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #57534e;
+  background: #4a6497;
 }

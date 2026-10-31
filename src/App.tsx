@@ -320,7 +320,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-amber-500 selection:text-stone-950">
+    <div className="min-h-screen bg-navy-850 text-navy-100 flex flex-col font-sans selection:bg-accent selection:text-white">
       {/* Hidden File Input */}
       <input
         ref={fileInputRef}
@@ -331,16 +331,16 @@ export default function App() {
       />
 
       {/* Top Navbar */}
-      <header className="bg-stone-900 border-b border-stone-800 px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 shadow-md">
+      <header className="bg-navy-950 px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 shadow-md shadow-navy-950/40">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-stone-950 shadow-md shadow-amber-900/20 font-bold">
-            <Music className="w-5 h-5 text-stone-950" />
+          <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/35">
+            <Music className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-extrabold text-base md:text-xl text-stone-100 tracking-tight leading-tight">
+            <h1 className="font-extrabold text-base md:text-xl text-white tracking-tight leading-tight">
               Song Konverter
             </h1>
-            <p className="text-xs text-amber-400 font-medium">
+            <p className="text-xs text-chord font-medium">
               Ultimate Guitar zu ChordPro (MobileSheets)
             </p>
           </div>
@@ -353,27 +353,27 @@ export default function App() {
             <button
               type="button"
               onClick={() => setIsSampleMenuOpen(prev => !prev)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition cursor-pointer select-none ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition cursor-pointer select-none ${
                 isSampleMenuOpen
-                  ? 'bg-amber-600/20 text-amber-300 border-amber-500/50'
-                  : 'bg-stone-800 hover:bg-stone-700 text-stone-200 border-stone-700'
+                  ? 'bg-blue-400/18 text-accent-soft border-accent/60'
+                  : 'bg-navy-700 hover:bg-navy-650 text-navy-200 border-navy-600'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <Sparkles className="w-3.5 h-3.5 text-accent-soft" />
               <span>Beispiel laden</span>
               <ChevronDown
-                className={`w-3.5 h-3.5 text-stone-400 transition-transform duration-200 ${
-                  isSampleMenuOpen ? 'rotate-180 text-amber-400' : ''
+                className={`w-3.5 h-3.5 text-navy-300 transition-transform duration-200 ${
+                  isSampleMenuOpen ? 'rotate-180 text-accent-soft' : ''
                 }`}
               />
             </button>
 
             {isSampleMenuOpen && (
-              <div className="absolute right-0 top-full mt-1.5 w-72 bg-stone-900 border border-stone-700 rounded-xl shadow-2xl py-1.5 z-50 animate-fadeIn">
-                <div className="px-3 py-1.5 text-[10px] uppercase font-bold text-stone-400 border-b border-stone-800 tracking-wider">
+              <div className="absolute right-0 top-full mt-1.5 w-72 bg-navy-800 border border-navy-650 rounded-xl shadow-2xl shadow-navy-950/60 py-1.5 z-50 animate-fadeIn">
+                <div className="px-3 py-1.5 text-[10px] uppercase font-bold text-navy-300 border-b border-navy-650 tracking-wider">
                   Song- & Tab-Vorlagen
                 </div>
-                <div className="max-h-80 overflow-y-auto divide-y divide-stone-800/60">
+                <div className="max-h-80 overflow-y-auto divide-y divide-navy-650/60">
                   {SAMPLE_SONGS.map(s => (
                     <button
                       key={s.id}
@@ -382,12 +382,12 @@ export default function App() {
                         handleLoadSample(s.id);
                         setIsSampleMenuOpen(false);
                       }}
-                      className="w-full text-left px-3.5 py-2.5 text-xs hover:bg-stone-800 text-stone-200 flex flex-col gap-0.5 transition cursor-pointer group"
+                      className="w-full text-left px-3.5 py-2.5 text-xs hover:bg-navy-700 text-navy-200 flex flex-col gap-0.5 transition cursor-pointer group"
                     >
-                      <span className="font-semibold text-amber-400 group-hover:text-amber-300">
+                      <span className="font-semibold text-chord group-hover:text-accent-soft">
                         {s.artist} – {s.title}
                       </span>
-                      <span className="text-[11px] text-stone-400 leading-tight">
+                      <span className="text-[11px] text-navy-300 leading-tight">
                         {s.description}
                       </span>
                     </button>
@@ -401,10 +401,10 @@ export default function App() {
           <button
             type="button"
             onClick={() => setIsGuideOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-medium border border-stone-700 transition cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 text-xs font-medium border border-navy-600 transition cursor-pointer"
             title="Import-Anleitung für MobileSheets auf Android"
           >
-            <Tablet className="w-3.5 h-3.5 text-sky-400" />
+            <Tablet className="w-3.5 h-3.5 text-accent-soft" />
             <span className="hidden sm:inline">Tablet Anleitung</span>
           </button>
 
@@ -412,7 +412,7 @@ export default function App() {
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}
-            className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 transition cursor-pointer"
+            className="p-1.5 rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 border border-navy-600 transition cursor-pointer"
             title="Konvertierungs-Optionen anpassen"
           >
             <Settings className="w-4 h-4" />
@@ -421,21 +421,21 @@ export default function App() {
       </header>
 
       {/* Metadata Quick Bar (Title, Artist, Key, Capo, etc.) */}
-      <div className="bg-stone-900/60 border-b border-stone-800 px-4 md:px-6 py-2">
+      <div className="bg-navy-900 border-b border-navy-950 px-4 md:px-6 py-2">
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="text-[11px] font-semibold text-stone-400 uppercase tracking-wider mr-1">
-            Metadaten:
+          <span className="text-[11px] font-semibold text-navy-300 uppercase tracking-wider mr-1">
+            Metadaten
           </span>
 
           {/* Artist */}
-          <div className="flex items-center bg-stone-950 rounded-md border border-stone-800 px-2 py-1">
-            <span className="text-stone-400 text-[10px] mr-1.5 font-mono">Interpret:</span>
+          <div className="flex items-center bg-navy-850 rounded-md border border-navy-650 px-2.5 py-1 transition focus-within:border-blue-400 focus-within:ring-3 focus-within:ring-accent/15">
+            <span className="text-navy-300 text-[11px] mr-1.5">Interpret</span>
             <input
               type="text"
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
               placeholder="z. B. Incubus"
-              className="bg-transparent text-stone-200 text-xs focus:outline-none w-28 md:w-36 font-medium placeholder-stone-600"
+              className="bg-transparent text-navy-100 text-xs focus:outline-none w-28 md:w-36 font-medium placeholder-navy-500"
             />
           </div>
 
@@ -443,52 +443,52 @@ export default function App() {
           <button
             type="button"
             onClick={handleSwapTitleArtist}
-            className="p-1 text-stone-400 hover:text-amber-400 hover:bg-stone-800 rounded transition cursor-pointer"
+            className="p-1 text-navy-300 hover:text-accent-soft hover:bg-blue-400/18 rounded-md transition cursor-pointer"
             title="Titel und Interpret vertauschen"
           >
             <ArrowRightLeft className="w-3.5 h-3.5" />
           </button>
 
           {/* Title */}
-          <div className="flex items-center bg-stone-950 rounded-md border border-stone-800 px-2 py-1">
-            <span className="text-stone-400 text-[10px] mr-1.5 font-mono">Titel:</span>
+          <div className="flex items-center bg-navy-850 rounded-md border border-navy-650 px-2.5 py-1 transition focus-within:border-blue-400 focus-within:ring-3 focus-within:ring-accent/15">
+            <span className="text-navy-300 text-[11px] mr-1.5">Titel</span>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="z. B. Drive"
-              className="bg-transparent text-stone-200 text-xs focus:outline-none w-28 md:w-36 font-medium placeholder-stone-600"
+              className="bg-transparent text-navy-100 text-xs focus:outline-none w-28 md:w-36 font-medium placeholder-navy-500"
             />
           </div>
 
           {/* Key */}
-          <div className="flex items-center bg-stone-950 rounded-md border border-stone-800 px-2 py-1">
-            <span className="text-stone-400 text-[10px] mr-1 font-mono">Key:</span>
+          <div className="flex items-center bg-navy-850 rounded-md border border-navy-650 px-2.5 py-1 transition focus-within:border-blue-400 focus-within:ring-3 focus-within:ring-accent/15">
+            <span className="text-navy-300 text-[11px] mr-1.5">Key</span>
             <input
               type="text"
               value={key}
               onChange={(e) => setKey(e.target.value)}
               placeholder="Em"
-              className="bg-transparent text-amber-400 text-xs focus:outline-none w-14 font-mono placeholder-stone-600"
+              className="bg-transparent text-accent-soft text-xs focus:outline-none w-14 font-mono placeholder-navy-500"
             />
           </div>
 
           {/* Capo */}
-          <div className="flex items-center bg-stone-950 rounded-md border border-stone-800 px-2 py-1">
-            <span className="text-stone-400 text-[10px] mr-1 font-mono">Capo:</span>
+          <div className="flex items-center bg-navy-850 rounded-md border border-navy-650 px-2.5 py-1 transition focus-within:border-blue-400 focus-within:ring-3 focus-within:ring-accent/15">
+            <span className="text-navy-300 text-[11px] mr-1.5">Capo</span>
             <input
               type="text"
               value={capo}
               onChange={(e) => setCapo(e.target.value)}
               placeholder="z. B. 2"
-              className="bg-transparent text-sky-400 text-xs focus:outline-none w-16 font-mono placeholder-stone-600"
+              className="bg-transparent text-cat-verse text-xs focus:outline-none w-16 font-mono placeholder-navy-500"
             />
           </div>
 
           {/* N.C. and Live-preview toggles */}
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-4">
             <label
-              className="flex items-center gap-1.5 cursor-pointer text-[11px] text-stone-300 hover:text-stone-100"
+              className="flex items-center gap-1.5 cursor-pointer text-[11px] text-navy-300 hover:text-navy-100"
               title="N.C. (No Chord) im ChordPro-Dokument anzeigen oder ausblenden (standardmäßig aktiv)"
             >
               <input
@@ -500,18 +500,18 @@ export default function App() {
                   handleConvert(undefined, newOpts);
                   showToast(e.target.checked ? 'N.C. eingeblendet' : 'N.C. ausgeblendet');
                 }}
-                className="rounded border-stone-700 text-amber-600 focus:ring-amber-500 bg-stone-950"
+                className="accent-accent cursor-pointer"
               />
-              <span className="font-mono text-amber-400 font-bold">N.C.</span>
+              <span className="font-mono text-accent-soft font-bold">N.C.</span>
               <span>anzeigen</span>
             </label>
 
-            <label className="flex items-center gap-1.5 cursor-pointer text-[11px] text-stone-400 hover:text-stone-300">
+            <label className="flex items-center gap-1.5 cursor-pointer text-[11px] text-navy-300 hover:text-navy-100">
               <input
                 type="checkbox"
                 checked={autoConvert}
                 onChange={(e) => setAutoConvert(e.target.checked)}
-                className="rounded border-stone-700 text-amber-600 focus:ring-amber-500 bg-stone-950"
+                className="accent-accent cursor-pointer"
               />
               <span>Live-Vorschau</span>
             </label>
@@ -522,14 +522,14 @@ export default function App() {
       {/* Main Dual-Pane Workspace */}
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 md:p-6 min-h-[500px]">
         {/* ================= LEFT WINDOW: ULTIMATE GUITAR INPUT ================= */}
-        <section className="flex flex-col rounded-2xl bg-stone-900 border border-stone-800 overflow-hidden shadow-lg">
+        <section className="flex flex-col rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
           {/* Left Pane Header */}
-          <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-stone-900 border-b border-stone-800">
+          <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-navy-950">
             <div className="flex items-center gap-2">
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold font-mono">
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-400/18 text-accent-soft text-xs font-bold font-mono">
                 1
               </span>
-              <h2 className="text-xs md:text-sm font-bold text-stone-200">
+              <h2 className="text-xs md:text-sm font-bold text-navy-100">
                 Ultimate Guitar Text (Eingabe)
               </h2>
             </div>
@@ -540,10 +540,10 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700 transition cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 border border-navy-600 transition cursor-pointer"
                 title="Textdatei (.txt, .crd) laden"
               >
-                <FolderOpen className="w-3.5 h-3.5 text-amber-400" />
+                <FolderOpen className="w-3.5 h-3.5 text-accent-soft" />
                 <span className="hidden sm:inline">Datei laden</span>
               </button>
 
@@ -551,10 +551,10 @@ export default function App() {
               <button
                 type="button"
                 onClick={handlePasteClipboard}
-                className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700 transition cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 border border-navy-600 transition cursor-pointer"
                 title="Aus der Zwischenablage einfügen"
               >
-                <ClipboardPaste className="w-3.5 h-3.5 text-emerald-400" />
+                <ClipboardPaste className="w-3.5 h-3.5 text-accent-soft" />
                 <span>Einfügen</span>
               </button>
 
@@ -565,7 +565,7 @@ export default function App() {
                   setInputText('');
                   showToast('Eingabe geleert.');
                 }}
-                className="p-1 rounded-lg text-stone-400 hover:text-red-400 hover:bg-stone-800 transition cursor-pointer"
+                className="p-1 rounded-md text-navy-300 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
                 title="Textfeld leeren"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -576,7 +576,7 @@ export default function App() {
           {/* Textarea for input with Drag & Drop */}
           <div
             className={`relative flex-1 flex flex-col transition ${
-              isDragOver ? 'ring-2 ring-amber-500 bg-amber-500/5' : ''
+              isDragOver ? 'ring-2 ring-accent bg-accent/5' : ''
             }`}
             onDragOver={(e) => {
               e.preventDefault();
@@ -595,16 +595,16 @@ export default function App() {
                 }
               }}
               placeholder={`Füge hier den Songtext mit Akkorden aus Ultimate Guitar ein...\n\nBeispiel:\n[Verse]\nEm      Em7    Cmaj7      A7\nSometimes, I feel the fear of uncertainty`}
-              className="flex-1 w-full p-4 bg-stone-950 text-stone-200 font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-stone-600 select-text"
+              className="flex-1 w-full p-4 bg-navy-825 text-navy-100 font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-navy-500 select-text"
               spellCheck={false}
             />
 
             {/* Drag & drop overlay hint if empty */}
             {!inputText && !isDragOver && (
-              <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-6 text-stone-500 text-center">
-                <FileText className="w-10 h-10 mb-2 text-stone-600" />
+              <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-6 text-navy-300 text-center">
+                <FileText className="w-10 h-10 mb-2 text-navy-500" />
                 <p className="text-sm font-medium">Text hier einfügen oder .txt Datei hineinziehen</p>
-                <p className="text-xs text-stone-600 mt-1">
+                <p className="text-xs text-navy-500 mt-1">
                   Unterstützt Ultimate Guitar Akkordzeilen über Text
                 </p>
               </div>
@@ -612,8 +612,8 @@ export default function App() {
           </div>
 
           {/* Left Footer: Stats & Convert Action Button */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-stone-900 border-t border-stone-800 text-xs">
-            <span className="text-stone-400 text-[11px] font-mono">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-navy-750 border-t border-navy-650 text-xs">
+            <span className="text-navy-300 text-[11px] font-mono">
               {inputText.split('\n').length} Zeilen • {inputText.length} Zeichen
             </span>
 
@@ -621,7 +621,7 @@ export default function App() {
             <button
               type="button"
               onClick={() => handleConvert()}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold shadow-lg shadow-amber-950/40 transition active:scale-95 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white font-bold shadow-lg shadow-accent/35 transition active:scale-95 cursor-pointer"
               title="Akkorde und Text in ChordPro umwandeln (Strg + Enter)"
             >
               <span>In ChordPro konvertieren</span>
@@ -631,7 +631,7 @@ export default function App() {
         </section>
 
         {/* ================= RIGHT WINDOW: CHORDPRO OUTPUT & PREVIEW ================= */}
-        <section className="flex flex-col rounded-2xl bg-stone-900 border border-stone-800 overflow-hidden shadow-lg">
+        <section className="flex flex-col rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
           {/* Top Toolbar */}
           <ChordProToolbar
             viewMode={viewMode}
@@ -648,25 +648,25 @@ export default function App() {
           />
 
           {/* Right Main Body: Either Raw Code Editor or MobileSheets Sheet View */}
-          <div className="relative flex-1 flex flex-col bg-stone-950 overflow-hidden min-h-[350px]">
+          <div className="relative flex-1 flex flex-col bg-navy-825 overflow-hidden min-h-[350px]">
             {viewMode === 'code' ? (
               <textarea
                 ref={rightTextareaRef}
                 value={outputText}
                 onChange={(e) => setOutputText(e.target.value)}
                 placeholder={`Das konvertierte ChordPro-Format erscheint hier...\n\nBeispiel:\n{title: Drive}\n{artist: Incubus}\n\n{start_of_verse: Verse}\n[Em]Sometime[Em7]s, I fe[Cmaj7]el the fear[A7]...\n{end_of_verse}`}
-                className="flex-1 w-full p-4 bg-stone-950 text-amber-200/90 font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-stone-600 select-text"
+                className="flex-1 w-full p-4 bg-navy-825 text-code font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-navy-500 select-text"
                 spellCheck={false}
               />
             ) : (
-              <div className="flex-1 overflow-auto">
+              <div className="flex-1 overflow-auto p-4">
                 {outputText.trim() ? (
                   <MobileSheetsPreview chordProText={outputText} fontSize={fontSize} />
                 ) : (
-                  <div className="h-full flex flex-col items-center justify-center p-8 text-stone-500 text-center">
-                    <Tablet className="w-12 h-12 mb-3 text-stone-600" />
-                    <p className="text-sm font-semibold text-stone-400">Keine ChordPro-Daten zur Vorschau</p>
-                    <p className="text-xs text-stone-600 mt-1 max-w-sm">
+                  <div className="h-full flex flex-col items-center justify-center p-8 text-navy-300 text-center">
+                    <Tablet className="w-12 h-12 mb-3 text-navy-500" />
+                    <p className="text-sm font-semibold text-navy-200">Keine ChordPro-Daten zur Vorschau</p>
+                    <p className="text-xs text-navy-500 mt-1 max-w-sm">
                       Klicke links auf „In ChordPro konvertieren“, um hier das Layout wie auf dem MobileSheets Tablet zu sehen.
                     </p>
                   </div>
@@ -676,21 +676,21 @@ export default function App() {
           </div>
 
           {/* Right Footer: Status & Quick Info */}
-          <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-stone-900 border-t border-stone-800 text-xs text-stone-400">
+          <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-navy-750 border-t border-navy-650 text-xs text-navy-300">
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-mono">
                 {outputText ? `${outputText.split('\n').length} Zeilen` : '0 Zeilen'}
               </span>
-              <span className="text-stone-600">•</span>
+              <span className="text-navy-500">•</span>
               <span className="text-[11px]">
                 Direkt editierbar & MobileSheets-kompatibel
               </span>
             </div>
 
             <div className="flex items-center gap-2 text-[11px]">
-              <span className="text-stone-400">Tipp:</span>
-              <span className="text-amber-400">Strg + Enter</span>
-              <span className="text-stone-500">zum Konvertieren</span>
+              <span className="text-navy-300">Tipp:</span>
+              <span className="text-accent-soft font-semibold">Strg + Enter</span>
+              <span className="text-navy-300">zum Konvertieren</span>
             </div>
           </div>
         </section>
@@ -698,8 +698,8 @@ export default function App() {
 
       {/* Toast Notification Banner */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-stone-800 text-stone-100 border border-stone-700 shadow-2xl animate-bounce-short">
-          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-md bg-navy-800 text-navy-100 border border-navy-650 shadow-2xl shadow-navy-950/60 animate-bounce-short">
+          <Check className="w-4 h-4 text-emerald-500 shrink-0" />
           <span className="text-xs font-medium">{toastMessage}</span>
         </div>
       )}
