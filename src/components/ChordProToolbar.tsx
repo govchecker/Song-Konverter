@@ -228,6 +228,13 @@ export const ChordProToolbar: React.FC<ChordProToolbarProps> = ({
           >
             + Capo
           </button>
+          <button
+            type="button"
+            onClick={() => onInsertDirective('{tempo: }')}
+            className="px-2 py-0.5 rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 border border-navy-600 font-mono cursor-pointer transition"
+          >
+            + Tempo
+          </button>
         </div>
       )}
     </div>
