@@ -68,6 +68,9 @@ chmod +x Song-Konverter-<Version>.AppImage
 ```
 Die Datei kann beliebig kopiert oder weitergegeben werden. Für einen Eintrag im Anwendungsmenü die Datei z. B. mit [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) oder AppImageLauncher integrieren.
 
+### Updates
+Fertige AppImages gibt es unter [Releases](https://github.com/govchecker/Song-Konverter-Desktop/releases). Paketmanager mit AppImage-Unterstützung (z. B. Shelly) erkennen neue Versionen, wenn als Update-Quelle das GitHub-Repository `govchecker/Song-Konverter-Desktop` eingetragen ist. Jedes Release enthält dafür die Datei `Song-Konverter-<Version>.AppImage`, und der Release-Tag lautet `v<Version>`.
+
 Hinweise:
 - Benötigt auf manchen Systemen `fuse2` (Arch/CachyOS: `sudo pacman -S fuse2`). Alternativ: `./Song-Konverter-<Version>.AppImage --appimage-extract-and-run`.
 - Auf Ubuntu 24.04 und neuer kann der Start mit einer Sandbox-Fehlermeldung scheitern. Dann mit `--no-sandbox` starten.
@@ -102,7 +105,7 @@ Den gebauten Stand ohne Paketierung testen: `npm run electron:start`.
 - **Zwei Ansichtsmodi im rechten Fenster:**
   - **ChordPro Code:** Quelltext-Editor mit Zeilennummern und Schnelleinfüge-Leiste für Tags (`+ Verse`, `+ Chorus`, `+ Bridge`, `+ Solo`, `+ [Akkord]`, etc.).
   - **MobileSheets Vorschau:** Naturgetreue Tablet-Darstellung des Notenblatts:
-    - Akkorde werden in gut lesbarer gelber Schrift exakt über den jeweiligen Textsilben angezeigt.
+    - Akkorde werden in gut lesbarer hellblauer Schrift exakt über den jeweiligen Textsilben angezeigt.
     - Intro-, Solo- und Outro-Akkorde werden als normale Akkorde mit passendem Abstand dargestellt (ohne störende Rahmen oder Buttons).
     - Abschnitte (Verse, Chorus, Bridge, Solo, Outro) werden farblich gekennzeichnet.
     - Zoom-Funktion (<kbd>A-</kbd> / <kbd>A+</kbd>) zur Anpassung der Schriftgröße für Live-Auftritte.
