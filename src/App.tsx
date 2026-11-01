@@ -16,7 +16,9 @@ import {
   Sparkles,
   Tablet,
   FolderOpen,
-  ChevronDown
+  ChevronDown,
+  Pencil,
+  Eye
 } from 'lucide-react';
 import {
   convertToChordPro,
@@ -27,6 +29,7 @@ import {
 } from './utils/chordproConverter';
 import { transposeChordPro } from './utils/chordTransposer';
 import { SAMPLE_SONGS } from './utils/sampleSongs';
+import { wrapSection, getDirective, setDirective } from './utils/chordproDirectives';
 import { ChordProToolbar } from './components/ChordProToolbar';
 import { MobileSheetsPreview } from './components/MobileSheetsPreview';
 import { MobileSheetsGuideModal } from './components/MobileSheetsGuideModal';
@@ -42,6 +45,16 @@ export default function App() {
   const [viewMode, setViewMode] = useState<'code' | 'preview'>('code');
   const [fontSize, setFontSize] = useState<number>(15);
   const [downloadExt, setDownloadExt] = useState<string>('chordpro');
+
+  // App mode: Konverter (default) or Bearbeiten of existing ChordPro files.
+  // Both modes share outputText, so unsaved conversions show up in the editor.
+  const [appMode, setAppMode] = useState<'convert' | 'edit'>('convert');
+  const [showEditPreview, setShowEditPreview] = useState<boolean>(true);
+  const [editTitle, setEditTitle] = useState<string>('');
+  const [editSubtitle, setEditSubtitle] = useState<string>('');
+  const [editArtist, setEditArtist] = useState<string>('');
+  const [openedName, setOpenedName] = useState<string>('');
+  const editFileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Metadata states
   const [title, setTitle] = useState<string>('');
@@ -78,6 +91,17 @@ export default function App() {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, [isSampleMenuOpen]);
+
+  // Keep the Titel/Untertitel fields in sync with the {title}/{subtitle} directives in the text.
+  // Compare trimmed so trailing spaces typed in the field are not lost.
+  useEffect(() => {
+    const t = getDirective(outputText, 'title');
+    const st = getDirective(outputText, 'subtitle');
+    const ar = getDirective(outputText, 'artist');
+    setEditArtist(prev => (prev.trim() === ar ? prev : ar));
+    setEditTitle(prev => (prev.trim() === t ? prev : t));
+    setEditSubtitle(prev => (prev.trim() === st ? prev : st));
+  }, [outputText]);
 
   // Show toast notification
   const showToast = (msg: string) => {
@@ -239,7 +263,9 @@ export default function App() {
 
     // Determine filename from title and artist
     let filename = 'Song';
-    if (artist && title) {
+    if (appMode === 'edit') {
+      filename = openedName || editTitle || 'Song';
+    } else if (artist && title) {
       filename = `${artist} - ${title}`;
     } else if (title) {
       filename = title;
@@ -272,6 +298,20 @@ export default function App() {
     showToast(`Um ${semitones > 0 ? `+${semitones}` : semitones} Halbton transponiert!`);
   };
 
+  // Replace the text of the right textarea and put the selection back afterwards.
+  // Restoring scrollTop keeps the view where the user was working instead of jumping.
+  const applyToOutput = (updated: string, selStart: number, selEnd: number = selStart) => {
+    const scroll = rightTextareaRef.current?.scrollTop ?? 0;
+    setOutputText(updated);
+    requestAnimationFrame(() => {
+      const textarea = rightTextareaRef.current;
+      if (!textarea) return;
+      textarea.focus({ preventScroll: true });
+      textarea.setSelectionRange(selStart, selEnd);
+      textarea.scrollTop = scroll;
+    });
+  };
+
   // Insert directive into right textarea
   const handleInsertDirective = (textToInsert: string) => {
     const textarea = rightTextareaRef.current;
@@ -284,13 +324,45 @@ export default function App() {
     const end = textarea.selectionEnd;
     const current = textarea.value;
     const updated = current.substring(0, start) + textToInsert + current.substring(end);
-    setOutputText(updated);
 
-    // Reposition cursor
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + textToInsert.length, start + textToInsert.length);
-    }, 10);
+    // Caret goes into the new tag: onto the empty middle line of a block, else before the closing bracket.
+    let caret = textToInsert.length;
+    if (textToInsert.includes('\n\n')) caret = textToInsert.indexOf('\n') + 1;
+    else if (/[}\]]$/.test(textToInsert)) caret = textToInsert.length - 1;
+    applyToOutput(updated, start + caret);
+  };
+
+  // Wrap the selection in a section tag (replacing an existing one), or insert an empty block.
+  const handleInsertSection = (kind: string, label?: string) => {
+    const textarea = rightTextareaRef.current;
+    if (textarea) {
+      const edit = wrapSection(textarea.value, textarea.selectionStart, textarea.selectionEnd, kind, label);
+      if (edit) {
+        applyToOutput(edit.text, edit.selStart, edit.selEnd);
+        return;
+      }
+    }
+    const open = `{start_of_${kind}${label ? `: ${label}` : ''}}`;
+    handleInsertDirective(`${open}\n\n{end_of_${kind}}`);
+  };
+
+  // Open an existing ChordPro file in edit mode
+  const handleOpenForEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result;
+      if (typeof content !== 'string') return;
+      setOutputText(content);
+      const dot = file.name.lastIndexOf('.');
+      const ext = dot > 0 ? file.name.slice(dot + 1).toLowerCase() : '';
+      setOpenedName(dot > 0 ? file.name.slice(0, dot) : file.name);
+      if (['chordpro', 'cho', 'pro', 'txt'].includes(ext)) setDownloadExt(ext);
+      showToast(`Datei "${file.name}" geöffnet!`);
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   // Load a sample song
@@ -330,6 +402,14 @@ export default function App() {
         className="hidden"
       />
 
+      <input
+        ref={editFileInputRef}
+        type="file"
+        accept=".cho,.chordpro,.pro,.txt,.crd"
+        onChange={handleOpenForEdit}
+        className="hidden"
+      />
+
       {/* Top Navbar */}
       <header className="bg-navy-950 px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 shadow-md shadow-navy-950/40">
         <div className="flex items-center gap-3">
@@ -346,9 +426,32 @@ export default function App() {
           </div>
         </div>
 
+        {/* Mode switch: Konverter / Bearbeiten */}
+        <div className="flex items-center bg-navy-900 p-1 rounded-lg border border-navy-650">
+          {([
+            ['convert', 'Konverter', ArrowRightLeft],
+            ['edit', 'Bearbeiten', Pencil],
+          ] as const).map(([m, label, Icon]) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setAppMode(m)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition cursor-pointer ${
+                appMode === m
+                  ? 'bg-accent text-white font-bold shadow-sm shadow-accent/35'
+                  : 'text-navy-300 hover:text-navy-100'
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {label}
+            </button>
+          ))}
+        </div>
+
         {/* Right Nav Actions */}
         <div className="flex items-center gap-2">
           {/* Sample Songs Dropdown */}
+          {appMode === 'convert' && (
           <div className="relative" ref={sampleMenuRef}>
             <button
               type="button"
@@ -396,6 +499,7 @@ export default function App() {
               </div>
             )}
           </div>
+          )}
 
           {/* Guide Modal Trigger */}
           <button
@@ -421,6 +525,39 @@ export default function App() {
       </header>
 
       {/* Metadata Quick Bar (Title, Artist, Key, Capo, etc.) */}
+      {appMode === 'edit' && (
+        <div className="bg-navy-900 border-b border-navy-950 px-4 md:px-6 py-2">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <span className="text-[11px] font-semibold text-navy-300 uppercase tracking-wider mr-1">
+              Song
+            </span>
+            {([
+              ['Titel', 'title', editTitle, setEditTitle, 'z. B. Drive'],
+              ['Untertitel', 'subtitle', editSubtitle, setEditSubtitle, 'z. B. Single-Version'],
+              ['Interpret', 'artist', editArtist, setEditArtist, 'z. B. Incubus'],
+            ] as const).map(([label, name, value, setValue, placeholder]) => (
+              <div
+                key={name}
+                className="flex items-center bg-navy-850 rounded-md border border-navy-650 px-2.5 py-1 transition focus-within:border-blue-400 focus-within:ring-3 focus-within:ring-accent/15"
+              >
+                <span className="text-navy-300 text-[11px] mr-1.5">{label}</span>
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => {
+                    setValue(e.target.value);
+                    setOutputText(setDirective(outputText, name, e.target.value.trim()));
+                  }}
+                  placeholder={placeholder}
+                  className="bg-transparent text-navy-100 text-xs focus:outline-none w-40 md:w-56 font-medium placeholder-navy-500"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {appMode === 'convert' && (
       <div className="bg-navy-900 border-b border-navy-950 px-4 md:px-6 py-2">
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="text-[11px] font-semibold text-navy-300 uppercase tracking-wider mr-1">
@@ -518,8 +655,91 @@ export default function App() {
           </div>
         </div>
       </div>
+      )}
+
+      {/* Edit mode: ChordPro editor + optional preview */}
+      {appMode === 'edit' && (
+        <main className={`flex-1 grid grid-cols-1 gap-4 p-4 md:p-6 min-h-[500px] ${showEditPreview ? 'lg:grid-cols-2' : ''}`}>
+          <section className="flex flex-col rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
+            <ChordProToolbar
+              mode="edit"
+              viewMode="code"
+              onViewModeChange={setViewMode}
+              onInsertDirective={handleInsertDirective}
+              onInsertSection={handleInsertSection}
+              onOpen={() => editFileInputRef.current?.click()}
+              showPreview={showEditPreview}
+              onTogglePreview={() => setShowEditPreview(prev => !prev)}
+              onTranspose={handleTranspose}
+              onCopy={handleCopyOutput}
+              isCopied={isCopied}
+              onDownload={handleDownload}
+              fontSize={fontSize}
+              onFontSizeChange={setFontSize}
+              downloadExt={downloadExt}
+              setDownloadExt={setDownloadExt}
+            />
+            <div className="relative flex-1 flex flex-col bg-navy-825 overflow-hidden min-h-[350px]">
+              <textarea
+                ref={rightTextareaRef}
+                value={outputText}
+                onChange={(e) => setOutputText(e.target.value)}
+                placeholder="Öffne eine ChordPro-Datei oder wechsle vom Konverter hierher, um den konvertierten Song zu bearbeiten."
+                className="flex-1 w-full p-4 bg-navy-825 text-code font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-navy-500 select-text"
+                spellCheck={false}
+              />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-navy-750 border-t border-navy-650 text-xs text-navy-300">
+              <span className="text-[11px] font-mono">
+                {outputText ? `${outputText.split('\n').length} Zeilen` : '0 Zeilen'}
+                {openedName ? ` • ${openedName}` : ''}
+              </span>
+              <span className="text-[11px]">Text markieren und auf + Verse, + Chorus … klicken, um ihn einzufassen</span>
+            </div>
+          </section>
+
+          {showEditPreview && (
+            <section className="flex flex-col rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
+              <div className="flex items-center justify-between gap-2 p-3 bg-navy-950">
+                <h2 className="text-xs md:text-sm font-bold text-navy-100 flex items-center gap-2">
+                  <Eye className="w-3.5 h-3.5 text-accent-soft" />
+                  MobileSheets Vorschau
+                </h2>
+                <div className="flex items-center gap-1 bg-navy-825 px-2 py-1 rounded-lg border border-navy-650 text-xs">
+                  <span className="text-navy-300 text-[11px]">Schrift</span>
+                  <button
+                    type="button"
+                    onClick={() => setFontSize(Math.max(12, fontSize - 2))}
+                    className="px-2 py-0.5 bg-blue-400/18 hover:bg-blue-400/30 rounded-md text-accent-soft transition cursor-pointer"
+                    title="Schrift kleiner"
+                  >
+                    A-
+                  </button>
+                  <span className="text-navy-300 text-[10px] w-6 text-center">{fontSize}</span>
+                  <button
+                    type="button"
+                    onClick={() => setFontSize(Math.min(26, fontSize + 2))}
+                    className="px-2 py-0.5 bg-blue-400/18 hover:bg-blue-400/30 rounded-md text-accent-soft transition cursor-pointer"
+                    title="Schrift größer"
+                  >
+                    A+
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 bg-navy-825">
+                {outputText.trim() ? (
+                  <MobileSheetsPreview chordProText={outputText} fontSize={fontSize} />
+                ) : (
+                  <p className="text-sm text-navy-300 text-center mt-8">Keine ChordPro-Daten zur Vorschau</p>
+                )}
+              </div>
+            </section>
+          )}
+        </main>
+      )}
 
       {/* Main Dual-Pane Workspace */}
+      {appMode === 'convert' && (
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 md:p-6 min-h-[500px]">
         {/* ================= LEFT WINDOW: ULTIMATE GUITAR INPUT ================= */}
         <section className="flex flex-col rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
@@ -637,6 +857,7 @@ export default function App() {
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             onInsertDirective={handleInsertDirective}
+            onInsertSection={handleInsertSection}
             onTranspose={handleTranspose}
             onCopy={handleCopyOutput}
             isCopied={isCopied}
@@ -695,6 +916,7 @@ export default function App() {
           </div>
         </section>
       </main>
+      )}
 
       {/* Toast Notification Banner */}
       {toastMessage && (

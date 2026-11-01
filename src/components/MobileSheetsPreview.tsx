@@ -22,6 +22,7 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
   const lines = chordProText.split(/\r?\n/);
 
   let songTitle = '';
+  let songSubtitle = '';
   let songArtist = '';
   let songKey = '';
   let songCapo = '';
@@ -48,6 +49,10 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
 
       if (tag === 'title' || tag === 't') {
         songTitle = val;
+        continue;
+      }
+      if (tag === 'subtitle' || tag === 'st') {
+        songSubtitle = val;
         continue;
       }
       if (tag === 'artist' || tag === 'a') {
@@ -187,8 +192,11 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
         <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
           {songTitle || 'Unbenannter Song'}
         </h1>
+        {songSubtitle && (
+          <p className="text-navy-200 text-base mt-0.5">{songSubtitle}</p>
+        )}
         {songArtist && (
-          <p className="text-navy-300 font-medium text-lg mt-0.5">{songArtist}</p>
+          <p className="text-navy-300 font-medium text-lg mt-0.5">Interpret: {songArtist}</p>
         )}
 
         {/* Metadata Badges */}

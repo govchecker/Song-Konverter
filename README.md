@@ -9,89 +9,23 @@ Eine moderne Webanwendung, die Songtexte mit Akkorden über den Textzeilen (wie 
 
 ## Inhaltsverzeichnis
 
-1. [Anleitung: Programm starten](#anleitung-programm-starten)
+1. [Hauptfunktionen im Überblick](#hauptfunktionen-im-überblick)
+2. [Schritt-für-Schritt Bedienungsanleitung](#schritt-für-schritt-bedienungsanleitung)
+3. [So funktioniert die Konvertierung](#so-funktioniert-die-konvertierung)
+4. [Import in MobileSheets auf dem Android-Tablet](#import-in-mobilesheets-auf-dem-android-tablet)
+5. [Tastenkürzel & Tipps](#tastenkürzel--tipps)
+6. [Anleitung: Programm starten](#anleitung-programm-starten)
    - [Als Desktop-App (Linux, AppImage)](#als-desktop-app-linux-appimage)
-2. [Hauptfunktionen im Überblick](#hauptfunktionen-im-überblick)
-3. [Schritt-für-Schritt Bedienungsanleitung](#schritt-für-schritt-bedienungsanleitung)
-4. [So funktioniert die Konvertierung](#so-funktioniert-die-konvertierung)
-5. [Import in MobileSheets auf dem Android-Tablet](#import-in-mobilesheets-auf-dem-android-tablet)
-6. [Tastenkürzel & Tipps](#tastenkürzel--tipps)
 7. [Projektstruktur](#projektstruktur)
-
----
-
-## Anleitung: Programm starten
-
-### Voraussetzungen
-- **Node.js** (Version 18 oder neuer)
-- Ein aktueller Webbrowser (Google Chrome, Firefox, Safari oder Edge)
-
-### Installation & Start in 3 Schritten:
-
-1. **Abhängigkeiten installieren:**
-   Öffne ein Terminal im Projektverzeichnis und führe folgenden Befehl aus:
-   ```bash
-   npm install
-   ```
-
-2. **Entwicklungsserver starten:**
-   Starte den lokalen Server mit:
-   ```bash
-   npm run dev
-   ```
-
-3. **Im Browser öffnen:**
-   Öffne deinen Webbrowser und navigiere zu:
-   ```
-   http://localhost:3000
-   ```
-
-*(Alternativ: Für einen optimierten Produktions-Build kann `npm run build` und anschließend `npm run preview` ausgeführt werden).*
-
----
-
-## Als Desktop-App (Linux, AppImage)
-
-Dieses Projekt ist mit Electron als eigenständige Desktop-Anwendung verpackt. Die fertige **AppImage** ist eine einzelne Datei, die ohne Installation auf nahezu jeder Linux-Distribution läuft (auch ohne Node.js).
-
-### AppImage bauen
-```bash
-npm install
-npm run dist:linux
-```
-Das Ergebnis liegt in `release/Song-Konverter-<Version>-linux-x86_64.AppImage` (ca. 120 MB).
-
-### AppImage benutzen
-```bash
-chmod +x Song-Konverter-<Version>-linux-x86_64.AppImage
-./Song-Konverter-<Version>-linux-x86_64.AppImage
-```
-Die Datei kann beliebig kopiert oder weitergegeben werden. Für einen Eintrag im Anwendungsmenü die Datei z. B. mit [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) oder AppImageLauncher integrieren.
-
-### Updates
-Fertige AppImages gibt es unter [Releases](https://github.com/govchecker/Song-Konverter-Desktop/releases). Jedes Release enthält die Datei `Song-Konverter-<Version>-linux-x86_64.AppImage`, und der Release-Tag lautet `v<Version>`.
-
-Da das Repository privat ist, können AppImage-Manager wie Shelly keine Updates erkennen: Sie fragen die GitHub-Releases ohne Anmeldung ab und erhalten bei privaten Repositories nur „Not Found“. Neue Versionen daher von Hand aus den Releases herunterladen.
-
-Hinweise:
-- Benötigt auf manchen Systemen `fuse2` (Arch/CachyOS: `sudo pacman -S fuse2`). Alternativ: `./Song-Konverter-<Version>-linux-x86_64.AppImage --appimage-extract-and-run`.
-- Auf Ubuntu 24.04 und neuer kann der Start mit einer Sandbox-Fehlermeldung scheitern. Dann mit `--no-sandbox` starten.
-
-### Entwickeln mit Electron
-In zwei Terminals:
-```bash
-npm run dev            # Vite-Entwicklungsserver auf Port 3000
-npm run electron:dev   # Electron-Fenster, das den Entwicklungsserver lädt
-```
-Den gebauten Stand ohne Paketierung testen: `npm run electron:start`.
-
-> Wird Electron aus VS Code oder einem anderen Electron-Programm heraus gestartet, kann die Umgebungsvariable `ELECTRON_RUN_AS_NODE` gesetzt sein. Dann startet Electron nicht als App. In dem Fall `env -u ELECTRON_RUN_AS_NODE npm run electron:start` verwenden.
 
 ---
 
 ## Hauptfunktionen im Überblick
 
-- **Zwei editierbare Arbeitsfenster (Dual-Pane Layout):**
+- **Zwei Modi, oben in der Kopfleiste umschaltbar:**
+  - **Konverter** (Standard): wandelt Ultimate-Guitar-Text in ChordPro um.
+  - **Bearbeiten:** öffnet bestehende ChordPro-Dateien zum Bearbeiten und Speichern. Ein gerade konvertierter, noch ungespeicherter Song wird beim Wechsel automatisch übernommen.
+- **Zwei editierbare Arbeitsfenster im Konverter-Modus (Dual-Pane Layout):**
   - **Links:** Eingabe des originalen Ultimate-Guitar-Textes mit Akkorden über dem Text.
   - **Rechts:** Resultierendes ChordPro-Format. Dieses Fenster ist **direkt editierbar**, sodass du jederzeit manuelle Anpassungen vornehmen kannst.
 - **Mehrere Möglichkeiten zur Texteingabe:**
@@ -111,6 +45,13 @@ Den gebauten Stand ohne Paketierung testen: `npm run electron:start`.
     - Intro-, Solo- und Outro-Akkorde werden als normale Akkorde mit passendem Abstand dargestellt (ohne störende Rahmen oder Buttons).
     - Abschnitte (Verse, Chorus, Bridge, Solo, Outro) werden farblich gekennzeichnet.
     - Zoom-Funktion (<kbd>A-</kbd> / <kbd>A+</kbd>) zur Anpassung der Schriftgröße für Live-Auftritte.
+- **Bearbeiten-Modus für bestehende ChordPro-Dateien:**
+  - **„Öffnen“-Button** lädt `.chordpro`, `.cho`, `.pro`, `.txt` oder `.crd` per Dateidialog.
+  - **Felder für Titel, Untertitel und Interpret** schreiben direkt `{title: …}`, `{subtitle: …}` und `{artist: …}` in den Text. Dazu gibt es die Buttons `+ Titel`, `+ Untertitel` und `+ Interpret`, die das Tag an der Cursorposition einfügen.
+  - **Abschnitte einfassen:** Markierten Text mit `+ Verse`, `+ Chorus`, `+ Bridge`, `+ Solo / Part` oder `+ Tab` in Start- und End-Tag einfassen. Steht der Text schon in einem Abschnitt, wird dessen Tag durch das neue ersetzt (z. B. Verse ➔ Chorus). Ohne Markierung wird ein leerer Block eingefügt.
+  - **Cursor bleibt an der Stelle:** Nach dem Einfügen von Tags (z. B. `+ Tempo`) springt der Cursor nicht ans Dokumentende, sondern steht im neuen Tag.
+  - **MobileSheets Vorschau** ist standardmäßig eingeblendet und lässt sich mit dem Button „Vorschau“ aus- und einschalten. Sie zeigt Titel, Untertitel und Interpret.
+- **Fenstergröße und -position** werden beim Schließen gespeichert und beim nächsten Start wiederhergestellt (unter Wayland ggf. nur die Größe).
 - **Transponieren (+/- Halbtöne):**
   - Alle Akkorde im Dokument können per Klick um `-1` oder `+1` Halbtöne höher oder tiefer gesetzt werden.
 - **Export & Speichern:**
@@ -146,6 +87,14 @@ Klicke unten im linken Fenster auf **„In ChordPro konvertieren“** (oder drü
 
 ### 5. Datei speichern
 Klicke oben rechts auf **„Speichern“**. Dein Browser lädt die Datei z. B. als `Incubus - Drive.chordpro` herunter.
+
+### 6. Bestehende ChordPro-Datei bearbeiten (Modus „Bearbeiten“)
+- Schalte oben in der Kopfleiste von **„Konverter“** auf **„Bearbeiten“**. Hast du gerade einen Song konvertiert, erscheint er dort sofort, auch wenn er noch nicht gespeichert ist.
+- Klicke auf **„Öffnen“**, um eine vorhandene ChordPro-Datei zu laden.
+- Trage **Titel**, **Untertitel** und **Interpret** in die Felder oberhalb des Editors ein. Sie werden als `{title}`, `{subtitle}` und `{artist}` in den Text geschrieben.
+- **Abschnitt einfassen oder umwandeln:** Markiere Text mit der Maus und klicke auf `+ Verse`, `+ Chorus`, `+ Bridge`, `+ Solo / Part` oder `+ Tab`. Der Text wird mit Start- und End-Tag eingefasst. Gehört er schon zu einem Abschnitt, wird dessen Tag ersetzt. Ohne Markierung fügt der Button einen leeren Block ein.
+- Rechts zeigt die **MobileSheets Vorschau** das Ergebnis. Mit dem Button **„Vorschau“** blendest du sie aus oder wieder ein.
+- Mit **„Speichern“** sicherst du die Datei. Der Dateiname und die Endung stammen von der geöffneten Datei.
 
 ---
 
@@ -240,6 +189,75 @@ Das Programm setzt **kein Limit** auf die Akkordvielfalt. Die Erkennung basiert 
 
 ---
 
+## Anleitung: Programm starten
+
+### Voraussetzungen
+- **Node.js** (Version 18 oder neuer)
+- Ein aktueller Webbrowser (Google Chrome, Firefox, Safari oder Edge)
+
+### Installation & Start in 3 Schritten:
+
+1. **Abhängigkeiten installieren:**
+   Öffne ein Terminal im Projektverzeichnis und führe folgenden Befehl aus:
+   ```bash
+   npm install
+   ```
+
+2. **Entwicklungsserver starten:**
+   Starte den lokalen Server mit:
+   ```bash
+   npm run dev
+   ```
+
+3. **Im Browser öffnen:**
+   Öffne deinen Webbrowser und navigiere zu:
+   ```
+   http://localhost:3000
+   ```
+
+*(Alternativ: Für einen optimierten Produktions-Build kann `npm run build` und anschließend `npm run preview` ausgeführt werden).*
+
+---
+
+## Als Desktop-App (Linux, AppImage)
+
+Dieses Projekt ist mit Electron als eigenständige Desktop-Anwendung verpackt. Die fertige **AppImage** ist eine einzelne Datei, die ohne Installation auf nahezu jeder Linux-Distribution läuft (auch ohne Node.js).
+
+### AppImage bauen
+```bash
+npm install
+npm run dist:linux
+```
+Das Ergebnis liegt in `release/Song-Konverter-<Version>-linux-x86_64.AppImage` (ca. 120 MB).
+
+### AppImage benutzen
+```bash
+chmod +x Song-Konverter-<Version>-linux-x86_64.AppImage
+./Song-Konverter-<Version>-linux-x86_64.AppImage
+```
+Die Datei kann beliebig kopiert oder weitergegeben werden. Für einen Eintrag im Anwendungsmenü die Datei z. B. mit [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) oder AppImageLauncher integrieren.
+
+### Updates
+Fertige AppImages gibt es unter [Releases](https://github.com/govchecker/Song-Konverter-Desktop/releases). Jedes Release enthält die Datei `Song-Konverter-<Version>-linux-x86_64.AppImage`, und der Release-Tag lautet `v<Version>`.
+
+Da das Repository privat ist, können AppImage-Manager wie Shelly keine Updates erkennen: Sie fragen die GitHub-Releases ohne Anmeldung ab und erhalten bei privaten Repositories nur „Not Found“. Neue Versionen daher von Hand aus den Releases herunterladen.
+
+Hinweise:
+- Benötigt auf manchen Systemen `fuse2` (Arch/CachyOS: `sudo pacman -S fuse2`). Alternativ: `./Song-Konverter-<Version>-linux-x86_64.AppImage --appimage-extract-and-run`.
+- Auf Ubuntu 24.04 und neuer kann der Start mit einer Sandbox-Fehlermeldung scheitern. Dann mit `--no-sandbox` starten.
+
+### Entwickeln mit Electron
+In zwei Terminals:
+```bash
+npm run dev            # Vite-Entwicklungsserver auf Port 3000
+npm run electron:dev   # Electron-Fenster, das den Entwicklungsserver lädt
+```
+Den gebauten Stand ohne Paketierung testen: `npm run electron:start`.
+
+> Wird Electron aus VS Code oder einem anderen Electron-Programm heraus gestartet, kann die Umgebungsvariable `ELECTRON_RUN_AS_NODE` gesetzt sein. Dann startet Electron nicht als App. In dem Fall `env -u ELECTRON_RUN_AS_NODE npm run electron:start` verwenden.
+
+---
+
 ## Projektstruktur
 
 ```
@@ -249,7 +267,7 @@ Das Programm setzt **kein Limit** auf die Akkordvielfalt. Die Erkennung basiert 
 ├── vite.config.ts                      # Vite-Konfiguration (React, Tailwind CSS)
 ├── screenshot.jpg                      # Screenshot für diese Anleitung
 ├── electron/
-│   └── main.cjs                        # Electron-Hauptprozess (Fenster, lädt Vite-Server bzw. dist/)
+│   └── main.cjs                        # Electron-Hauptprozess (Fenster inkl. gespeicherter Größe/Position, lädt Vite-Server bzw. dist/)
 ├── build/
 │   ├── icon.svg                        # App-Icon (Vorlage)
 │   └── icon.png                        # App-Icon für die AppImage
@@ -258,12 +276,13 @@ Das Programm setzt **kein Limit** auf die Akkordvielfalt. Die Erkennung basiert 
 │   ├── App.tsx                         # Hauptkomponente mit Dual-Pane Benutzeroberfläche
 │   ├── index.css                       # Styling mit Tailwind CSS
 │   ├── components/
-│   │   ├── ChordProToolbar.tsx         # Werkzeugleiste (Vorschau-Umschalter, Transponieren, Download)
+│   │   ├── ChordProToolbar.tsx         # Werkzeugleiste (Vorschau-Umschalter, Einfügen-Buttons, Transponieren, Download)
 │   │   ├── MobileSheetsPreview.tsx     # Naturgetreue Tablet-Vorschau für MobileSheets
 │   │   ├── MobileSheetsGuideModal.tsx  # Schritt-für-Schritt Tablet-Importanleitung (Dialog)
 │   │   └── ConversionSettingsModal.tsx # Einstellungen für Formatierung und Direktiven
 │   └── utils/
 │       ├── chordproConverter.ts        # Kernalgorithmus: Zeichengenaue Akkordeinbindung & Direktiven
 │       ├── chordTransposer.ts          # Transponier-Logik für Akkorde (+/- Halbtöne)
+│       ├── chordproDirectives.ts       # Bearbeiten-Modus: Abschnitte einfassen, Titel/Untertitel/Interpret
 │       └── sampleSongs.ts              # Beispiel-Songs (inkl. Incubus – Drive)
 ```
