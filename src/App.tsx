@@ -70,6 +70,14 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
+  // Startbereich links: sichtbar, solange kein Text da ist und nicht "Leer beginnen" gewählt wurde
+  const [startEmpty, setStartEmpty] = useState<boolean>(false);
+  const [isStartSamplesOpen, setIsStartSamplesOpen] = useState<boolean>(false);
+  // Startbereich im Bearbeiten-Modus
+  const [editStartEmpty, setEditStartEmpty] = useState<boolean>(false);
+  const [isEditDragOver, setIsEditDragOver] = useState<boolean>(false);
+  const showEditStartPanel = appMode === 'edit' && !outputText && !editStartEmpty;
+  const showStartPanel = appMode === 'convert' && !inputText && !startEmpty;
 
   // File input ref for uploading .txt files
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -111,20 +119,6 @@ export default function App() {
     }, 2800);
   };
 
-  // On initial load, load the Incubus - Drive sample by default so the user sees it immediately!
-  useEffect(() => {
-    const driveSample = SAMPLE_SONGS[0];
-    setInputText(driveSample.content);
-    const converted = convertToChordPro(driveSample.content, options);
-    setOutputText(converted);
-    const { metadata } = parseMetadata(driveSample.content, options.titleArtistOrder);
-    if (metadata.title) setTitle(metadata.title);
-    if (metadata.artist) setArtist(metadata.artist);
-    if (metadata.key) setKey(metadata.key);
-    if (metadata.capo) setCapo(metadata.capo);
-    if (metadata.tempo) setTempo(metadata.tempo);
-  }, []);
-
   // Conversion trigger
   const handleConvert = (customSource?: string, customOpts?: ConverterOptions) => {
     const source = customSource !== undefined ? customSource : inputText;
@@ -160,6 +154,41 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [inputText, title, artist, key, capo, tempo, options]);
+
+  // Strg+V im Startbereich: Text aus der Zwischenablage direkt übernehmen
+  useEffect(() => {
+    if (!showStartPanel) return;
+    const handlePaste = (e: ClipboardEvent) => {
+      const text = e.clipboardData?.getData('text');
+      if (!text) return;
+      e.preventDefault();
+      setInputText(text);
+      const { metadata } = parseMetadata(text, options.titleArtistOrder);
+      if (metadata.title) setTitle(metadata.title);
+      if (metadata.artist) setArtist(metadata.artist);
+      if (metadata.key) setKey(metadata.key);
+      if (metadata.capo) setCapo(metadata.capo);
+      if (metadata.tempo) setTempo(metadata.tempo);
+      if (autoConvert) handleConvert(text);
+      showToast('Text aus der Zwischenablage eingefügt!');
+    };
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [showStartPanel, options, autoConvert, title, artist, key, capo, tempo]);
+
+  // Strg+V im Startbereich des Bearbeiten-Modus
+  useEffect(() => {
+    if (!showEditStartPanel) return;
+    const handlePaste = (e: ClipboardEvent) => {
+      const text = e.clipboardData?.getData('text');
+      if (!text) return;
+      e.preventDefault();
+      setOutputText(text);
+      showToast('Text aus der Zwischenablage eingefügt!');
+    };
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [showEditStartPanel]);
 
   // Load a file from disk
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -346,10 +375,8 @@ export default function App() {
     handleInsertDirective(`${open}\n\n{end_of_${kind}}`);
   };
 
-  // Open an existing ChordPro file in edit mode
-  const handleOpenForEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // Read a ChordPro file into the editor (file dialog and drag & drop)
+  const readChordProFile = (file: File) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target?.result;
@@ -362,7 +389,21 @@ export default function App() {
       showToast(`Datei "${file.name}" geöffnet!`);
     };
     reader.readAsText(file);
+  };
+
+  // Open an existing ChordPro file in edit mode
+  const handleOpenForEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    readChordProFile(file);
     e.target.value = '';
+  };
+
+  const handleEditDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsEditDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) readChordProFile(file);
   };
 
   // Load a sample song
@@ -405,7 +446,7 @@ export default function App() {
       <input
         ref={editFileInputRef}
         type="file"
-        accept=".cho,.chordpro,.pro,.txt,.crd"
+        accept=".cho,.chordpro,.chopro,.crd,.pro,.txt"
         onChange={handleOpenForEdit}
         className="hidden"
       />
@@ -679,15 +720,56 @@ export default function App() {
               downloadExt={downloadExt}
               setDownloadExt={setDownloadExt}
             />
-            <div className="relative flex-1 flex flex-col bg-navy-825 overflow-hidden min-h-[350px]">
-              <textarea
-                ref={rightTextareaRef}
-                value={outputText}
-                onChange={(e) => setOutputText(e.target.value)}
-                placeholder="Öffne eine ChordPro-Datei oder wechsle vom Konverter hierher, um den konvertierten Song zu bearbeiten."
-                className="flex-1 w-full p-4 bg-navy-825 text-code font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-navy-500 select-text"
-                spellCheck={false}
-              />
+            <div
+              className="relative flex-1 flex flex-col bg-navy-825 overflow-hidden min-h-[350px]"
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsEditDragOver(true);
+              }}
+              onDragLeave={() => setIsEditDragOver(false)}
+              onDrop={handleEditDrop}
+            >
+              {showEditStartPanel ? (
+                <div className="flex-1 flex p-4">
+                  <div className={`flex-1 flex flex-col items-center justify-center gap-4 text-center p-6 rounded-xl border-2 border-dashed transition ${
+                    isEditDragOver ? 'border-blue-400 bg-navy-800' : 'border-navy-650'
+                  }`}>
+                    <FileText className="w-10 h-10 text-navy-500" />
+                    <div>
+                      <p className="text-sm font-bold text-navy-100">ChordPro-Datei hierher ziehen</p>
+                      <p className="text-xs text-navy-300 mt-1">.cho, .chordpro, .chopro, .crd, .pro oder .txt aus dem Dateimanager ablegen</p>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => editFileInputRef.current?.click()}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-accent hover:bg-accent-hover text-white text-xs font-semibold shadow-lg shadow-accent/35 transition cursor-pointer"
+                      >
+                        <FolderOpen className="w-3.5 h-3.5" />
+                        <span>Datei öffnen…</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditStartEmpty(true)}
+                        className="px-3 py-1.5 rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 text-xs font-semibold border border-navy-600 transition cursor-pointer"
+                      >
+                        Leer beginnen
+                      </button>
+                    </div>
+                    <p className="text-xs text-navy-500">oder Text aus der Zwischenablage mit Strg+V einfügen</p>
+                  </div>
+                </div>
+              ) : (
+                <textarea
+                  ref={rightTextareaRef}
+                  value={outputText}
+                  onChange={(e) => setOutputText(e.target.value)}
+                  autoFocus={editStartEmpty}
+                  placeholder="Füge hier ChordPro-Text ein oder öffne eine ChordPro-Datei."
+                  className={`flex-1 w-full p-4 bg-navy-825 text-code font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-navy-500 select-text ${isEditDragOver ? 'ring-2 ring-inset ring-accent' : ''}`}
+                  spellCheck={false}
+                />
+              )}
             </div>
             <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-navy-750 border-t border-navy-650 text-xs text-navy-300">
               <span className="text-[11px] font-mono">
@@ -783,6 +865,7 @@ export default function App() {
                 type="button"
                 onClick={() => {
                   setInputText('');
+                  setStartEmpty(false);
                   showToast('Eingabe geleert.');
                 }}
                 className="p-1 rounded-md text-navy-300 hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
@@ -805,29 +888,77 @@ export default function App() {
             onDragLeave={() => setIsDragOver(false)}
             onDrop={handleDrop}
           >
-            <textarea
-              value={inputText}
-              onChange={(e) => {
-                const val = e.target.value;
-                setInputText(val);
-                if (autoConvert) {
-                  handleConvert(val);
-                }
-              }}
-              placeholder={`Füge hier den Songtext mit Akkorden aus Ultimate Guitar ein...\n\nBeispiel:\n[Verse]\nEm      Em7    Cmaj7      A7\nSometimes, I feel the fear of uncertainty`}
-              className="flex-1 w-full p-4 bg-navy-825 text-navy-100 font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-navy-500 select-text"
-              spellCheck={false}
-            />
-
-            {/* Drag & drop overlay hint if empty */}
-            {!inputText && !isDragOver && (
-              <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-6 text-navy-300 text-center">
-                <FileText className="w-10 h-10 mb-2 text-navy-500" />
-                <p className="text-sm font-medium">Text hier einfügen oder .txt Datei hineinziehen</p>
-                <p className="text-xs text-navy-500 mt-1">
-                  Unterstützt Ultimate Guitar Akkordzeilen über Text
-                </p>
+            {showStartPanel ? (
+              <div className="flex-1 flex p-4 bg-navy-825">
+                <div className={`flex-1 flex flex-col items-center justify-center gap-4 text-center p-6 rounded-xl border-2 border-dashed transition ${
+                  isDragOver ? 'border-blue-400 bg-navy-800' : 'border-navy-650'
+                }`}>
+                  <FileText className="w-10 h-10 text-navy-500" />
+                  <div>
+                    <p className="text-sm font-bold text-navy-100">Textdatei hierher ziehen</p>
+                    <p className="text-xs text-navy-300 mt-1">.txt aus dem Dateimanager ablegen</p>
+                  </div>
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-accent hover:bg-accent-hover text-white text-xs font-semibold shadow-lg shadow-accent/35 transition cursor-pointer"
+                    >
+                      <FolderOpen className="w-3.5 h-3.5" />
+                      <span>Datei hochladen…</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsStartSamplesOpen(prev => !prev)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 text-xs font-semibold border border-navy-600 transition cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-accent-soft" />
+                      <span>Beispiel laden</span>
+                      <ChevronDown className={`w-3.5 h-3.5 text-navy-300 transition-transform ${isStartSamplesOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStartEmpty(true)}
+                      className="px-3 py-1.5 rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 text-xs font-semibold border border-navy-600 transition cursor-pointer"
+                    >
+                      Leer beginnen
+                    </button>
+                  </div>
+                  {isStartSamplesOpen && (
+                    <div className="w-full max-w-xs bg-navy-800 border border-navy-650 rounded-lg py-1 text-left">
+                      {SAMPLE_SONGS.map(song => (
+                        <button
+                          key={song.id}
+                          type="button"
+                          onClick={() => {
+                            handleLoadSample(song.id);
+                            setIsStartSamplesOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-1.5 text-xs text-navy-200 hover:bg-navy-700 transition cursor-pointer"
+                        >
+                          {song.artist} – {song.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-xs text-navy-500">oder Text aus der Zwischenablage mit Strg+V einfügen</p>
+                </div>
               </div>
+            ) : (
+              <textarea
+                value={inputText}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setInputText(val);
+                  if (autoConvert) {
+                    handleConvert(val);
+                  }
+                }}
+                autoFocus={startEmpty}
+                placeholder={`Füge hier den Songtext mit Akkorden aus Ultimate Guitar ein...\n\nBeispiel:\n[Verse]\nEm      Em7    Cmaj7      A7\nSometimes, I feel the fear of uncertainty`}
+                className="flex-1 w-full p-4 bg-navy-825 text-navy-100 font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-navy-500 select-text"
+                spellCheck={false}
+              />
             )}
           </div>
 
@@ -875,7 +1006,7 @@ export default function App() {
                 ref={rightTextareaRef}
                 value={outputText}
                 onChange={(e) => setOutputText(e.target.value)}
-                placeholder={`Das konvertierte ChordPro-Format erscheint hier...\n\nBeispiel:\n{title: Drive}\n{artist: Incubus}\n\n{start_of_verse: Verse}\n[Em]Sometime[Em7]s, I fe[Cmaj7]el the fear[A7]...\n{end_of_verse}`}
+                placeholder="Das konvertierte ChordPro-Format erscheint hier, sobald du links einen Song lädst oder einfügst."
                 className="flex-1 w-full p-4 bg-navy-825 text-code font-mono text-xs md:text-sm leading-relaxed resize-none focus:outline-none placeholder-navy-500 select-text"
                 spellCheck={false}
               />

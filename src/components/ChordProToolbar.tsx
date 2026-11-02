@@ -219,6 +219,14 @@ export const ChordProToolbar: React.FC<ChordProToolbarProps> = ({
           </button>
           <button
             type="button"
+            onClick={() => onInsertDirective('{chorus}')}
+            className="px-2 py-0.5 rounded-md bg-blue-400/18 hover:bg-blue-400/28 text-chord font-mono font-semibold cursor-pointer transition"
+            title="Wiederholt den zuletzt definierten Chorus an dieser Stelle ({chorus})"
+          >
+            + Chorus rep.
+          </button>
+          <button
+            type="button"
             onClick={() => onInsertSection('bridge', 'Bridge')}
             className="px-2 py-0.5 rounded-md bg-cat-bridge/14 hover:bg-cat-bridge/24 text-cat-bridge font-mono cursor-pointer transition"
           >

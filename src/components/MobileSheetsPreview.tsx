@@ -31,6 +31,9 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
 
   const parsedLines: ParsedLine[] = [];
   let currentSection: { type: 'verse' | 'chorus' | 'bridge' | 'part'; name: string } | null = null;
+  // Zuletzt vollständig definierter Chorus (start_of_chorus … end_of_chorus), für {chorus}
+  let chorusStart: number | null = null;
+  let lastChorus: ParsedLine[] | null = null;
 
   for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
     const line = lines[lineIdx];
@@ -90,12 +93,29 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
 
       if (tag === 'start_of_chorus' || tag === 'soc') {
         currentSection = { type: 'chorus', name: val || 'Chorus' };
+        chorusStart = parsedLines.length;
         parsedLines.push({ type: 'section-start', sectionType: 'chorus', sectionName: currentSection.name });
         continue;
       }
       if (tag === 'end_of_chorus' || tag === 'eoc') {
         parsedLines.push({ type: 'section-end', sectionType: 'chorus' });
+        if (chorusStart !== null) {
+          lastChorus = parsedLines.slice(chorusStart);
+          chorusStart = null;
+        }
         currentSection = null;
+        continue;
+      }
+
+      // {chorus} / {chorus: Label}: zuletzt definierten Chorus an dieser Stelle wiederholen
+      if (tag === 'chorus') {
+        if (!lastChorus) {
+          parsedLines.push({ type: 'comment', content: 'Chorus (noch kein Chorus definiert)' });
+        } else {
+          const copy = lastChorus.map(l => ({ ...l }));
+          if (val && copy[0]?.type === 'section-start') copy[0].sectionName = val;
+          parsedLines.push(...copy);
+        }
         continue;
       }
 
@@ -305,7 +325,12 @@ export const MobileSheetsPreview: React.FC<MobileSheetsPreviewProps> = ({
             return (
               <div key={idx} className="flex flex-wrap items-end my-1">
                 {line.tokens.map((token, tIdx) => (
-                  <span key={tIdx} className="inline-flex flex-col">
+                  <span
+                    key={tIdx}
+                    className="inline-flex flex-col"
+                    // Ist der Text kürzer als der Akkord, einen Abstand zum nächsten Akkord lassen
+                    style={token.chord && token.text.length <= token.chord.length ? { paddingRight: '1ch' } : undefined}
+                  >
                     {/* Chord displayed on top - styled normally like in MobileSheets */}
                     <span className="text-chord font-bold font-mono min-h-[1.25em] text-[0.88em] leading-none select-text">
                       {token.chord || '\u00A0'}
