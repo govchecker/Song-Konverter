@@ -16,7 +16,6 @@ Eine moderne Webanwendung, die Songtexte mit Akkorden über den Textzeilen (wie 
 5. [Tastenkürzel & Tipps](#tastenkürzel--tipps)
 6. [Anleitung: Programm starten](#anleitung-programm-starten)
    - [Als Desktop-App (Linux, AppImage)](#als-desktop-app-linux-appimage)
-7. [Projektstruktur](#projektstruktur)
 
 ---
 
@@ -28,27 +27,30 @@ Eine moderne Webanwendung, die Songtexte mit Akkorden über den Textzeilen (wie 
 - **Zwei editierbare Arbeitsfenster im Konverter-Modus (Dual-Pane Layout):**
   - **Links:** Eingabe des originalen Ultimate-Guitar-Textes mit Akkorden über dem Text.
   - **Rechts:** Resultierendes ChordPro-Format. Dieses Fenster ist **direkt editierbar**, sodass du jederzeit manuelle Anpassungen vornehmen kannst.
+- **Leerer Start mit Startbereich:** Beim Programmstart wird kein Beispiel geladen. Solange noch nichts geladen oder eingefügt wurde, zeigt das linke Fenster einen Startbereich, das rechte Fenster bleibt leer.
 - **Mehrere Möglichkeiten zur Texteingabe:**
-  - Direktes Eintippen oder Bearbeiten im Textfeld.
-  - **„Einfügen“-Button:** Fügt mit einem Klick den Inhalt der Zwischenablage ein.
-  - **„Datei laden“-Button:** Liest Textdateien (`.txt`, `.crd`, `.tab`) vom Computer ein.
-  - **Drag & Drop:** Textdateien können einfach per Ziehen und Ablegen in das linke Fenster fallen gelassen werden.
-  - **Beispiel-Lieder:** Schnellauswahl mit dem Song **Incubus – Drive** sowie weiteren Vorlagen.
+  - **Drag & Drop:** Eine Textdatei aus dem Dateimanager in den Startbereich (oder später in das Textfeld) ziehen.
+  - **„Datei hochladen…“** bzw. **„Datei laden“-Button:** Liest Textdateien (`.txt`, `.crd`, `.tab`) vom Computer ein.
+  - **„Beispiel laden“:** Öffnet eine der mitgelieferten Vorlagen (Hotel California, Knockin' on Heaven's Door, Bass-Riff-Tabulatur).
+  - **„Leer beginnen“:** Zeigt das leere Textfeld zum Tippen oder Einfügen.
+  - **Zwischenablage:** <kbd>Strg</kbd> + <kbd>V</kbd> im Startbereich fügt den Text sofort ein, später auch der **„Einfügen“-Button**.
 - **Konvertierungs-Button & Tastenkürzel:**
   - Prominenter Button **„In ChordPro konvertieren“**.
   - Schnelltaste: <kbd>Strg</kbd> + <kbd>Enter</kbd> (Mac: <kbd>Cmd</kbd> + <kbd>Enter</kbd>).
   - Optionaler Schalter **„Live-Vorschau“** für sofortiges Konvertieren während des Schreibens.
 - **Zwei Ansichtsmodi im rechten Fenster:**
-  - **ChordPro Code:** Quelltext-Editor mit Zeilennummern und Schnelleinfüge-Leiste für Tags (`+ Verse`, `+ Chorus`, `+ Bridge`, `+ Solo`, `+ [Akkord]`, etc.).
+  - **ChordPro Code:** Quelltext-Editor mit Zeilennummern und Schnelleinfüge-Leiste für Tags (`+ Verse`, `+ Chorus`, `+ Chorus rep.`, `+ Bridge`, `+ Solo`, `+ [Akkord]`, etc.).
   - **MobileSheets Vorschau:** Naturgetreue Tablet-Darstellung des Notenblatts:
     - Akkorde werden in gut lesbarer hellblauer Schrift exakt über den jeweiligen Textsilben angezeigt.
     - Intro-, Solo- und Outro-Akkorde werden als normale Akkorde mit passendem Abstand dargestellt (ohne störende Rahmen oder Buttons).
     - Abschnitte (Verse, Chorus, Bridge, Solo, Outro) werden farblich gekennzeichnet.
     - Zoom-Funktion (<kbd>A-</kbd> / <kbd>A+</kbd>) zur Anpassung der Schriftgröße für Live-Auftritte.
 - **Bearbeiten-Modus für bestehende ChordPro-Dateien:**
-  - **„Öffnen“-Button** lädt `.chordpro`, `.cho`, `.pro`, `.txt` oder `.crd` per Dateidialog.
+  - **Startbereich:** Ist noch nichts geladen, zeigt das Fenster ein Feld zum Hineinziehen einer Datei, den Button **„Datei öffnen…“** und **„Leer beginnen“** (z. B. um mit <kbd>Strg</kbd> + <kbd>V</kbd> etwas aus der Zwischenablage einzufügen).
+  - **„Öffnen“-Button** lädt `.chordpro`, `.cho`, `.chopro`, `.pro`, `.txt` oder `.crd` per Dateidialog.
   - **Felder für Titel, Untertitel und Interpret** schreiben direkt `{title: …}`, `{subtitle: …}` und `{artist: …}` in den Text. Dazu gibt es die Buttons `+ Titel`, `+ Untertitel` und `+ Interpret`, die das Tag an der Cursorposition einfügen.
   - **Abschnitte einfassen:** Markierten Text mit `+ Verse`, `+ Chorus`, `+ Bridge`, `+ Solo / Part` oder `+ Tab` in Start- und End-Tag einfassen. Steht der Text schon in einem Abschnitt, wird dessen Tag durch das neue ersetzt (z. B. Verse ➔ Chorus). Ohne Markierung wird ein leerer Block eingefügt.
+  - **Chorus wiederholen:** `{chorus}` (Button `+ Chorus rep.`) wiederholt in der Vorschau den zuletzt mit `{start_of_chorus}` / `{soc}` und `{end_of_chorus}` / `{eoc}` definierten Chorus. Mit `{chorus: Refrain 2}` lässt sich die Überschrift ändern.
   - **Cursor bleibt an der Stelle:** Nach dem Einfügen von Tags (z. B. `+ Tempo`) springt der Cursor nicht ans Dokumentende, sondern steht im neuen Tag.
   - **MobileSheets Vorschau** ist standardmäßig eingeblendet und lässt sich mit dem Button „Vorschau“ aus- und einschalten. Sie zeigt Titel, Untertitel und Interpret.
 - **Fenstergröße und -position** werden beim Schließen gespeichert und beim nächsten Start wiederhergestellt (unter Wayland ggf. nur die Größe).
@@ -65,10 +67,11 @@ Eine moderne Webanwendung, die Songtexte mit Akkorden über den Textzeilen (wie 
 
 ### 1. Songtext einfügen (Linkes Fenster)
 Kopiere deinen Songtext von Ultimate Guitar und füge ihn auf eine der folgenden Weisen ein:
-- Klicke auf den Button **„Einfügen“** (liest die Zwischenablage aus) oder drücke <kbd>Strg</kbd> + <kbd>V</kbd>.
-- Oder klicke auf **„Datei laden“**, um eine bestehende Textdatei auszuwählen.
-- Oder ziehe eine `.txt`-Datei per Drag & Drop in das Textfeld.
-- *Zum Ausprobieren:* Klicke oben rechts auf **„Beispiel laden“** und wähle **Incubus – Drive**.
+- Drücke im Startbereich <kbd>Strg</kbd> + <kbd>V</kbd> oder klicke später auf den Button **„Einfügen“** (liest die Zwischenablage aus).
+- Oder klicke auf **„Datei hochladen…“** bzw. **„Datei laden“**, um eine bestehende Textdatei auszuwählen.
+- Oder ziehe eine `.txt`-Datei per Drag & Drop in den Startbereich.
+- Oder klicke auf **„Leer beginnen“** und tippe den Text direkt ein.
+- *Zum Ausprobieren:* Klicke auf **„Beispiel laden“** und wähle eine der Vorlagen.
 
 ### 2. Metadaten prüfen (Obere Leiste)
 Das Programm erkennt automatisch aus der ersten Zeile:
@@ -90,9 +93,10 @@ Klicke oben rechts auf **„Speichern“**. Dein Browser lädt die Datei z. B. a
 
 ### 6. Bestehende ChordPro-Datei bearbeiten (Modus „Bearbeiten“)
 - Schalte oben in der Kopfleiste von **„Konverter“** auf **„Bearbeiten“**. Hast du gerade einen Song konvertiert, erscheint er dort sofort, auch wenn er noch nicht gespeichert ist.
-- Klicke auf **„Öffnen“**, um eine vorhandene ChordPro-Datei zu laden.
+- Ziehe eine vorhandene ChordPro-Datei in den Startbereich oder klicke auf **„Datei öffnen…“** bzw. **„Öffnen“**. Mit **„Leer beginnen“** startest du ohne Datei, z. B. um Text aus der Zwischenablage einzufügen.
 - Trage **Titel**, **Untertitel** und **Interpret** in die Felder oberhalb des Editors ein. Sie werden als `{title}`, `{subtitle}` und `{artist}` in den Text geschrieben.
 - **Abschnitt einfassen oder umwandeln:** Markiere Text mit der Maus und klicke auf `+ Verse`, `+ Chorus`, `+ Bridge`, `+ Solo / Part` oder `+ Tab`. Der Text wird mit Start- und End-Tag eingefasst. Gehört er schon zu einem Abschnitt, wird dessen Tag ersetzt. Ohne Markierung fügt der Button einen leeren Block ein.
+- Mit `+ Chorus rep.` fügst du `{chorus}` ein. Die Vorschau zeigt an dieser Stelle den zuletzt definierten Chorus noch einmal.
 - Rechts zeigt die **MobileSheets Vorschau** das Ergebnis. Mit dem Button **„Vorschau“** blendest du sie aus oder wieder ein.
 - Mit **„Speichern“** sicherst du die Datei. Der Dateiname und die Endung stammen von der geöffneten Datei.
 
@@ -255,34 +259,3 @@ npm run electron:dev   # Electron-Fenster, das den Entwicklungsserver lädt
 Den gebauten Stand ohne Paketierung testen: `npm run electron:start`.
 
 > Wird Electron aus VS Code oder einem anderen Electron-Programm heraus gestartet, kann die Umgebungsvariable `ELECTRON_RUN_AS_NODE` gesetzt sein. Dann startet Electron nicht als App. In dem Fall `env -u ELECTRON_RUN_AS_NODE npm run electron:start` verwenden.
-
----
-
-## Projektstruktur
-
-```
-├── README.md                           # Diese ausführliche Benutzeranleitung
-├── package.json                        # Projektkonfiguration, Abhängigkeiten und electron-builder-Einstellungen
-├── index.html                          # HTML-Einstiegsseite
-├── vite.config.ts                      # Vite-Konfiguration (React, Tailwind CSS)
-├── screenshot.jpg                      # Screenshot für diese Anleitung
-├── electron/
-│   └── main.cjs                        # Electron-Hauptprozess (Fenster inkl. gespeicherter Größe/Position, lädt Vite-Server bzw. dist/)
-├── build/
-│   ├── icon.svg                        # App-Icon (Vorlage)
-│   └── icon.png                        # App-Icon für die AppImage
-├── src/
-│   ├── main.tsx                        # React Root Einstiegspunkt
-│   ├── App.tsx                         # Hauptkomponente mit Dual-Pane Benutzeroberfläche
-│   ├── index.css                       # Styling mit Tailwind CSS
-│   ├── components/
-│   │   ├── ChordProToolbar.tsx         # Werkzeugleiste (Vorschau-Umschalter, Einfügen-Buttons, Transponieren, Download)
-│   │   ├── MobileSheetsPreview.tsx     # Naturgetreue Tablet-Vorschau für MobileSheets
-│   │   ├── MobileSheetsGuideModal.tsx  # Schritt-für-Schritt Tablet-Importanleitung (Dialog)
-│   │   └── ConversionSettingsModal.tsx # Einstellungen für Formatierung und Direktiven
-│   └── utils/
-│       ├── chordproConverter.ts        # Kernalgorithmus: Zeichengenaue Akkordeinbindung & Direktiven
-│       ├── chordTransposer.ts          # Transponier-Logik für Akkorde (+/- Halbtöne)
-│       ├── chordproDirectives.ts       # Bearbeiten-Modus: Abschnitte einfassen, Titel/Untertitel/Interpret
-│       └── sampleSongs.ts              # Beispiel-Songs (inkl. Incubus – Drive)
-```
