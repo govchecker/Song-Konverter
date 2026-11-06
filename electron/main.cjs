@@ -1,6 +1,7 @@
-const { app, BrowserWindow, screen, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 const isDev = process.env.ELECTRON_DEV === '1';
 
@@ -57,6 +58,7 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.cjs'),
     },
   });
   mainWindow.setMenu(null);
@@ -79,6 +81,49 @@ function createWindow() {
     mainWindow = null;
   });
 }
+
+// PDF-Ansicht: HTML des Songs in einem unsichtbaren Fenster zu A4-PDF drucken und
+// das Ergebnis im eingebauten PDF-Betrachter anzeigen (dort gibt es auch „Speichern“).
+ipcMain.handle('pdf:show', async (_event, { html, title }) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'song-konverter-'));
+  const baseName = String(title || 'Song').replace(/[\\/:*?"<>|]+/g, '_').slice(0, 120) || 'Song';
+  const htmlFile = path.join(dir, 'song.html');
+  const pdfFile = path.join(dir, `${baseName}.pdf`);
+  const cleanup = () => fs.rmSync(dir, { recursive: true, force: true });
+
+  const printWin = new BrowserWindow({
+    show: false,
+    webPreferences: { javascript: false, sandbox: true, contextIsolation: true },
+  });
+  try {
+    fs.writeFileSync(htmlFile, String(html), 'utf8');
+    await printWin.loadFile(htmlFile);
+    const pdf = await printWin.webContents.printToPDF({
+      pageSize: 'A4',
+      printBackground: true,
+      preferCSSPageSize: true,
+    });
+    fs.writeFileSync(pdfFile, pdf);
+  } catch (err) {
+    cleanup();
+    throw err;
+  } finally {
+    printWin.destroy();
+  }
+
+  const viewer = new BrowserWindow({
+    width: 900,
+    height: 1000,
+    title: `${baseName}.pdf`,
+    icon: path.join(__dirname, '..', 'build', 'icon.png'),
+    autoHideMenuBar: true,
+    parent: mainWindow || undefined,
+    webPreferences: { contextIsolation: true, nodeIntegration: false, plugins: true },
+  });
+  viewer.setMenu(null);
+  viewer.on('closed', cleanup);
+  await viewer.loadFile(pdfFile);
+});
 
 app.on('second-instance', () => {
   if (!mainWindow) return;

@@ -18,7 +18,8 @@ import {
   FolderOpen,
   ChevronDown,
   Pencil,
-  Eye
+  Eye,
+  FileDown,
 } from 'lucide-react';
 import {
   convertToChordPro,
@@ -32,6 +33,7 @@ import { SAMPLE_SONGS } from './utils/sampleSongs';
 import { wrapSection, getDirective, setDirective } from './utils/chordproDirectives';
 import { ChordProToolbar } from './components/ChordProToolbar';
 import { MobileSheetsPreview } from './components/MobileSheetsPreview';
+import { showSongAsPdf } from './utils/pdfExport';
 import { MobileSheetsGuideModal } from './components/MobileSheetsGuideModal';
 import { ConversionSettingsModal } from './components/ConversionSettingsModal';
 
@@ -284,6 +286,20 @@ export default function App() {
   };
 
   // Save ChordPro file to disk
+  // Vorschau als PDF in einem eigenen Fenster anzeigen (dort lässt sie sich auch speichern)
+  const handleShowPdf = async () => {
+    if (!outputText.trim()) {
+      showToast('Keine ChordPro-Daten für ein PDF');
+      return;
+    }
+    try {
+      const ok = await showSongAsPdf(outputText, fontSize);
+      if (!ok) showToast('PDF-Ansicht gibt es nur in der Desktop-App');
+    } catch {
+      showToast('PDF konnte nicht erstellt werden');
+    }
+  };
+
   const handleDownload = (extension: string) => {
     if (!outputText) {
       showToast('Rechtes Fenster ist leer – kein Inhalt zum Speichern.');
@@ -433,7 +449,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-850 text-navy-100 flex flex-col font-sans selection:bg-accent selection:text-white">
+    <div className={`bg-navy-850 text-navy-100 flex flex-col font-sans selection:bg-accent selection:text-white ${appMode === 'edit' ? 'h-screen' : 'min-h-screen'}`}>
       {/* Hidden File Input */}
       <input
         ref={fileInputRef}
@@ -452,7 +468,7 @@ export default function App() {
       />
 
       {/* Top Navbar */}
-      <header className="bg-navy-950 px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 shadow-md shadow-navy-950/40">
+      <header className="shrink-0 bg-navy-950 px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 shadow-md shadow-navy-950/40">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/35">
             <Music className="w-5 h-5 text-white" />
@@ -700,8 +716,8 @@ export default function App() {
 
       {/* Edit mode: ChordPro editor + optional preview */}
       {appMode === 'edit' && (
-        <main className={`flex-1 grid grid-cols-1 gap-4 p-4 md:p-6 min-h-[500px] ${showEditPreview ? 'lg:grid-cols-2' : ''}`}>
-          <section className="flex flex-col rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
+        <main className={`flex-1 min-h-0 grid grid-cols-1 grid-rows-[minmax(0,1fr)] gap-4 p-4 md:p-6 ${showEditPreview ? 'lg:grid-cols-2' : ''}`}>
+          <section className="flex flex-col min-h-0 rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
             <ChordProToolbar
               mode="edit"
               viewMode="code"
@@ -721,7 +737,7 @@ export default function App() {
               setDownloadExt={setDownloadExt}
             />
             <div
-              className="relative flex-1 flex flex-col bg-navy-825 overflow-hidden min-h-[350px]"
+              className="relative flex-1 flex flex-col bg-navy-825 overflow-hidden min-h-0"
               onDragOver={(e) => {
                 e.preventDefault();
                 setIsEditDragOver(true);
@@ -781,8 +797,8 @@ export default function App() {
           </section>
 
           {showEditPreview && (
-            <section className="flex flex-col rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
-              <div className="flex items-center justify-between gap-2 p-3 bg-navy-950">
+            <section className="flex flex-col min-h-0 rounded-xl bg-navy-800 border border-navy-650 overflow-hidden shadow-[0_6px_24px_rgba(5,12,30,0.30)]">
+              <div className="flex shrink-0 items-center justify-between gap-2 p-3 bg-navy-950">
                 <h2 className="text-xs md:text-sm font-bold text-navy-100 flex items-center gap-2">
                   <Eye className="w-3.5 h-3.5 text-accent-soft" />
                   MobileSheets Vorschau
@@ -807,8 +823,17 @@ export default function App() {
                     A+
                   </button>
                 </div>
+                <button
+                  type="button"
+                  onClick={handleShowPdf}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 border border-navy-600 transition cursor-pointer"
+                  title="Vorschau als PDF anzeigen und speichern"
+                >
+                  <FileDown className="w-3.5 h-3.5 text-accent-soft" />
+                  PDF
+                </button>
               </div>
-              <div className="flex-1 overflow-auto p-4 bg-navy-825">
+              <div className="flex-1 min-h-0 overflow-auto p-4 bg-navy-825">
                 {outputText.trim() ? (
                   <MobileSheetsPreview chordProText={outputText} fontSize={fontSize} />
                 ) : (
@@ -993,6 +1018,7 @@ export default function App() {
             onCopy={handleCopyOutput}
             isCopied={isCopied}
             onDownload={handleDownload}
+            onShowPdf={handleShowPdf}
             fontSize={fontSize}
             onFontSizeChange={setFontSize}
             downloadExt={downloadExt}

@@ -37,8 +37,10 @@ Chord-line detection is heuristic, and most bugs come from here. `isChordLine` c
 
 **Transposition (`src/utils/chordTransposer.ts`)**: works on the ChordPro *output*. It rewrites `[...]` chord tokens (including slash bass notes) and the `{key: …}` directive.
 
-**Preview (`src/components/MobileSheetsPreview.tsx`)**: has its own ChordPro parser for rendering, separate from the converter. If you add or rename a directive in the converter, update the preview parser as well (both long and short forms such as `start_of_verse`/`sov`).
+**ChordPro parser (`src/utils/chordproParser.ts`)**: `parseChordPro` reads ChordPro output into metadata and display lines. The preview (`src/components/MobileSheetsPreview.tsx`) and the PDF export (`src/utils/pdfExport.ts`) both use it. If you add or rename a directive in the converter, update this parser (both long and short forms such as `start_of_verse`/`sov`).
+
+**PDF export (`src/utils/pdfExport.ts`)**: `buildPdfHtml` renders a white A4 page (black text, blue headings and chords). The renderer sends it to the main process through `window.songKonverter.showPdf` (`electron/preload.cjs`). `electron/main.cjs` prints it with `printToPDF` into a temp file and opens it in a viewer window, which has its own save button. Outside Electron (plain `npm run dev` in a browser) there is no bridge, so the PDF button only shows a toast.
 
 **State (`src/App.tsx`)**: one large component holds all state: input/output text, metadata fields, `ConverterOptions`, and view mode. There is no persistence. The right-hand ChordPro editor can be edited freely, and re-converting overwrites it. On startup the first entry of `SAMPLE_SONGS` (Incubus – Drive) is loaded.
 
-**Electron (`electron/main.cjs`)**: a minimal CommonJS main process with no preload or IPC. `ELECTRON_DEV=1` loads the dev server, otherwise it loads `dist/index.html`. That is why `vite.config.ts` sets `base: './'`. Only `dist/**` and `electron/**` are packaged.
+**Electron (`electron/main.cjs`)**: a minimal CommonJS main process. The only IPC is `pdf:show` (via `preload.cjs`). `ELECTRON_DEV=1` loads the dev server, otherwise it loads `dist/index.html`. That is why `vite.config.ts` sets `base: './'`. Only `dist/**` and `electron/**` are packaged. In edit mode the page itself does not scroll (`h-screen`); each pane scrolls inside, so the toolbars stay put.

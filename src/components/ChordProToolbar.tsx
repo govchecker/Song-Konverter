@@ -11,7 +11,8 @@ import {
   ArrowDown,
   RotateCcw,
   Sparkles,
-  FolderOpen
+  FolderOpen,
+  FileDown
 } from 'lucide-react';
 
 interface ChordProToolbarProps {
@@ -22,6 +23,8 @@ interface ChordProToolbarProps {
   onCopy: () => void;
   isCopied: boolean;
   onDownload: (ext: string) => void;
+  /** Vorschau als PDF anzeigen (nur im Konverter-Modus bei aktiver Vorschau) */
+  onShowPdf?: () => void;
   fontSize: number;
   onFontSizeChange: (size: number) => void;
   downloadExt: string;
@@ -42,6 +45,7 @@ export const ChordProToolbar: React.FC<ChordProToolbarProps> = ({
   onCopy,
   isCopied,
   onDownload,
+  onShowPdf,
   fontSize,
   onFontSizeChange,
   downloadExt,
@@ -54,7 +58,7 @@ export const ChordProToolbar: React.FC<ChordProToolbarProps> = ({
 }) => {
   const isEdit = mode === 'edit';
   return (
-    <div className="flex flex-col text-navy-200">
+    <div className="flex flex-col shrink-0 text-navy-200">
       {/* Top Row: Mode Switcher & Major Actions */}
       <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-navy-950">
         {isEdit ? (
@@ -158,6 +162,17 @@ export const ChordProToolbar: React.FC<ChordProToolbarProps> = ({
 
         {/* Action Buttons: Copy & Download */}
         <div className="flex items-center gap-2">
+          {!isEdit && viewMode === 'preview' && onShowPdf && (
+            <button
+              type="button"
+              onClick={onShowPdf}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-navy-700 hover:bg-navy-650 text-navy-200 border border-navy-600 transition active:scale-95 cursor-pointer"
+              title="Vorschau als PDF anzeigen und speichern"
+            >
+              <FileDown className="w-3.5 h-3.5 text-accent-soft" />
+              PDF
+            </button>
+          )}
           {/* Copy Button */}
           <button
             type="button"

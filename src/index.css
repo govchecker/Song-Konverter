@@ -2,6 +2,10 @@
 
 /* Mitternachtsblau-Palette: vom dunkelsten (Kopfleisten) zum hellsten (Text) */
 @theme {
+  /* Schrift der Song-Vorschau (wie im PDF); fehlt sie, greifen die Ersatzschriften */
+  --font-song: 'Adwaita Sans', 'Cantarell', 'Inter', 'DejaVu Sans', sans-serif;
+  --font-song-mono: 'Adwaita Mono', 'DejaVu Sans Mono', 'Liberation Mono', monospace;
+
   --color-navy-950: #0a1430; /* App-Kopfleiste, Fenster-Kopfzeilen */
   --color-navy-900: #12203f; /* Leiste darunter (Metadaten, Einfügen) */
   --color-navy-850: #172544; /* Seitenhintergrund */

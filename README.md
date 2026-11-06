@@ -45,6 +45,7 @@ Eine moderne Webanwendung, die Songtexte mit Akkorden über den Textzeilen (wie 
     - Intro-, Solo- und Outro-Akkorde werden als normale Akkorde mit passendem Abstand dargestellt (ohne störende Rahmen oder Buttons).
     - Abschnitte (Verse, Chorus, Bridge, Solo, Outro) werden farblich gekennzeichnet.
     - Zoom-Funktion (<kbd>A-</kbd> / <kbd>A+</kbd>) zur Anpassung der Schriftgröße für Live-Auftritte.
+    - **PDF:** Der Button „PDF“ zeigt den Song als A4-PDF (weißer Hintergrund, schwarzer Text, Überschriften und Akkorde in Blau) in einem eigenen Fenster an. Dort kannst du ihn speichern oder drucken. Verfügbar in beiden Modi.
 - **Bearbeiten-Modus für bestehende ChordPro-Dateien:**
   - **Startbereich:** Ist noch nichts geladen, zeigt das Fenster ein Feld zum Hineinziehen einer Datei, den Button **„Datei öffnen…“** und **„Leer beginnen“** (z. B. um mit <kbd>Strg</kbd> + <kbd>V</kbd> etwas aus der Zwischenablage einzufügen).
   - **„Öffnen“-Button** lädt `.chordpro`, `.cho`, `.chopro`, `.pro`, `.txt` oder `.crd` per Dateidialog.
@@ -53,6 +54,7 @@ Eine moderne Webanwendung, die Songtexte mit Akkorden über den Textzeilen (wie 
   - **Chorus wiederholen:** `{chorus}` (Button `+ Chorus rep.`) wiederholt in der Vorschau den zuletzt mit `{start_of_chorus}` / `{soc}` und `{end_of_chorus}` / `{eoc}` definierten Chorus. Mit `{chorus: Refrain 2}` lässt sich die Überschrift ändern.
   - **Cursor bleibt an der Stelle:** Nach dem Einfügen von Tags (z. B. `+ Tempo`) springt der Cursor nicht ans Dokumentende, sondern steht im neuen Tag.
   - **MobileSheets Vorschau** ist standardmäßig eingeblendet und lässt sich mit dem Button „Vorschau“ aus- und einschalten. Sie zeigt Titel, Untertitel und Interpret.
+  - **Leisten bleiben stehen:** Beim Scrollen bleiben die Werkzeugleisten beider Fenster sichtbar. Nur der Text bzw. die Vorschau scrollt.
 - **Fenstergröße und -position** werden beim Schließen gespeichert und beim nächsten Start wiederhergestellt (unter Wayland ggf. nur die Größe).
 - **Transponieren (+/- Halbtöne):**
   - Alle Akkorde im Dokument können per Klick um `-1` oder `+1` Halbtöne höher oder tiefer gesetzt werden.
